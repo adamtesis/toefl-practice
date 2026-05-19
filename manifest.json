@@ -1,0 +1,19 @@
+{
+  "name": "TOEFL iBT Practice",
+  "short_name": "TOEFL",
+  "description": "5 full-length TOEFL practice tests with audio recording",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f5f0",
+  "theme_color": "#185FA5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
