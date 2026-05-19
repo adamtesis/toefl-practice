@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TOEFL Practice">
+<meta name="theme-color" content="#185FA5">
+<title>TOEFL iBT Practice Tests</title>
+
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"TOEFL iBT Practice","short_name":"TOEFL","description":"5 full-length TOEFL practice tests with audio recording","start_url":"./","display":"standalone","background_color":"%23f7f5f0","theme_color":"%23185FA5","orientation":"portrait","icons":[{"src":"data:image/svg%2Bxml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%2280%22 fill=%22%23185FA5%22/><text x=%22256%22 y=%22340%22 font-family=%22Arial%22 font-size=%22220%22 font-weight=%22700%22 fill=%22white%22 text-anchor=%22middle%22>T</text></svg>","sizes":"any","type":"image/svg+xml","purpose":"any"}]}'>
+
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="80" fill="%23185FA5"/><text x="256" y="340" font-family="Arial" font-size="220" font-weight="700" fill="white" text-anchor="middle">T</text></svg>'>
+
+<style>
+:root {
+  --bg: #f7f5f0;
+  --surface: #ffffff;
+  --border: #e0ddd4;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --accent: #185FA5;
+  --accent-light: #E6F1FB;
+  --success: #0F6E56;
+  --success-light: #E1F5EE;
+  --warning: #BA7517;
+  --warning-light: #FAEEDA;
+  --danger: #A32D2D;
+  --danger-light: #FCEBEB;
+  --purple: #534AB7;
+  --purple-light: #EEEDFE;
+  --recording: #d32f2f;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+.app { max-width: 920px; margin: 0 auto; padding: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+h1 { font-size: 24px; margin: 0 0 8px; font-weight: 600; }
+h2 { font-size: 19px; margin: 0 0 14px; font-weight: 600; }
+h3 { font-size: 16px; margin: 0 0 10px; font-weight: 600; }
+p { margin: 0 0 10px; }
+.muted { color: var(--text-muted); font-size: 14px; }
+.btn {
+  background: var(--accent); color: white; border: none;
+  padding: 11px 20px; border-radius: 8px; font-size: 15px; font-weight: 500;
+  cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+  -webkit-appearance: none; appearance: none; min-height: 44px;
+}
+.btn:hover { opacity: 0.9; }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg); opacity: 1; }
+.btn-danger { background: var(--recording); }
+.btn-success { background: var(--success); }
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.exam-card {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px; cursor: pointer; background: var(--surface);
+  transition: all 0.15s;
+}
+.exam-card:hover { border-color: var(--accent); }
+.exam-card:active { transform: scale(0.98); }
+.level-badge {
+  display: inline-block; padding: 4px 10px; border-radius: 6px;
+  font-size: 12px; font-weight: 600; margin-bottom: 10px;
+}
+.level-b2 { background: var(--accent-light); color: var(--accent); }
+.level-c1 { background: var(--purple-light); color: var(--purple); }
+.passage {
+  background: #fafaf7; border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px; margin-bottom: 18px;
+  max-height: 360px; overflow-y: auto;
+  font-size: 15px; line-height: 1.7;
+  -webkit-overflow-scrolling: touch;
+}
+.question-block {
+  margin-bottom: 20px; padding: 16px; background: #fafaf7;
+  border-radius: 8px; border-left: 3px solid var(--accent);
+}
+.question-text { font-weight: 500; margin-bottom: 12px; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  padding: 12px 14px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; font-size: 15px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.option:active { background: var(--accent-light); }
+.option.selected { border-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+.option input { margin-top: 3px; }
+textarea {
+  width: 100%; min-height: 180px; padding: 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-family: inherit; font-size: 15px; line-height: 1.6;
+  resize: vertical;
+  -webkit-appearance: none; appearance: none;
+}
+.section-nav {
+  display: flex; gap: 6px; margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.section-tab {
+  padding: 8px 14px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--surface);
+  font-size: 14px; cursor: pointer; min-height: 38px;
+}
+.section-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+.section-tab.done { background: var(--success-light); color: var(--success); border-color: var(--success); }
+.audio-controls {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px; background: var(--accent-light);
+  border-radius: 8px; margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.audio-controls button {
+  background: var(--accent); color: white; border: none;
+  padding: 8px 14px; border-radius: 6px; cursor: pointer;
+  font-size: 14px; min-height: 38px;
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; margin: 18px 0;
+}
+.result-card {
+  background: var(--bg); padding: 16px;
+  border-radius: 10px; text-align: center;
+}
+.result-card .score { font-size: 28px; font-weight: 600; margin: 4px 0; }
+.result-card .label { font-size: 13px; color: var(--text-muted); }
+.feedback-block {
+  margin: 14px 0; padding: 14px; border-radius: 8px;
+  border-left: 4px solid;
+}
+.feedback-block.strength { background: var(--success-light); border-color: var(--success); }
+.feedback-block.weakness { background: var(--warning-light); border-color: var(--warning); }
+.feedback-block.next { background: var(--accent-light); border-color: var(--accent); }
+.review-item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.review-item:last-child { border-bottom: none; }
+.review-q { font-weight: 500; margin-bottom: 4px; }
+.review-your { color: var(--danger); }
+.review-correct { color: var(--success); }
+.review-good { color: var(--success); }
+hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+.speaking-prompt {
+  background: var(--purple-light); padding: 14px;
+  border-radius: 8px; margin-bottom: 12px;
+}
+.task-info { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.word-count { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+.level-summary {
+  background: linear-gradient(135deg, var(--accent-light), var(--purple-light));
+  padding: 22px; border-radius: 12px; text-align: center; margin: 18px 0;
+}
+.level-summary .big-level {
+  font-size: 38px; font-weight: 700; color: var(--accent); margin: 6px 0;
+}
+ul.tips { padding-left: 20px; margin: 8px 0; }
+ul.tips li { margin-bottom: 6px; }
+
+/* ===== Recording UI ===== */
+.recorder {
+  background: #fafaf7; border: 2px solid var(--border);
+  border-radius: 10px; padding: 16px; margin-bottom: 12px;
+}
+.recorder.recording { border-color: var(--recording); background: #fff5f5; }
+.recorder-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.rec-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  min-height: 44px;
+}
+.rec-btn.start { background: var(--recording); color: white; }
+.rec-btn.stop { background: var(--text); color: white; }
+.rec-btn.play { background: var(--accent); color: white; }
+.rec-btn.delete { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+.rec-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: white;
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+.rec-time {
+  font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 600;
+  color: var(--recording); margin-left: 8px;
+}
+.transcript-box {
+  background: var(--surface); border: 1px dashed var(--border);
+  border-radius: 6px; padding: 10px; margin-top: 10px;
+  font-size: 14px; min-height: 60px; color: var(--text-muted);
+}
+.transcript-box.has-content { color: var(--text); }
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 8px; margin-top: 12px;
+}
+.metric {
+  background: var(--surface); padding: 10px;
+  border-radius: 6px; border: 1px solid var(--border);
+}
+.metric-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-value { font-size: 18px; font-weight: 600; margin-top: 2px; }
+.metric-value.good { color: var(--success); }
+.metric-value.warning { color: var(--warning); }
+.metric-value.bad { color: var(--danger); }
+.self-eval {
+  margin-top: 14px; padding: 12px;
+  background: var(--accent-light); border-radius: 8px;
+}
+.self-eval h4 { margin: 0 0 8px; font-size: 14px; }
+.self-eval-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px; font-size: 13px;
+}
+.self-eval-stars { display: flex; gap: 4px; }
+.star {
+  width: 26px; height: 26px; border-radius: 4px;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; font-size: 14px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.star.active { background: var(--warning); color: white; border-color: var(--warning); }
+.install-banner {
+  background: var(--purple-light); padding: 12px;
+  border-radius: 8px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+.hidden { display: none !important; }
+.no-permissions {
+  background: var(--warning-light); border-left: 4px solid var(--warning);
+  padding: 12px; border-radius: 6px; margin-bottom: 12px; font-size: 14px;
+}
+audio { width: 100%; margin-top: 10px; }
+details { margin-bottom: 12px; }
+summary { cursor: pointer; padding: 6px 0; }
+@media (max-width: 600px) {
+  h1 { font-size: 20px; }
+  h2 { font-size: 17px; }
+  .card { padding: 16px; }
+  .audio-controls, .recorder-controls { flex-direction: column; align-items: stretch; }
+  .audio-controls button, .rec-btn { width: 100%; justify-content: center; }
+  .rec-time { margin-left: 0; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// ============================================================================
+// EXAM DATA — 5 exams: 2 at B2, 3 at C1
+// ============================================================================
+const EXAMS = {
+  exam1: {
+    id: 'exam1',
+    title: 'Practice Test 1 — Campus Life',
+    level: 'B2',
+    description: 'Intermediate level. Topics on university life, basic science, and everyday academic situations.',
+    reading: [
+      {
+        passage: `The History of Public Libraries\n\nPublic libraries as we know them today are a relatively recent invention. While collections of books existed in ancient civilizations such as Egypt and Greece, these were typically reserved for scholars, priests, or the wealthy. The famous Library of Alexandria, founded around 300 BCE, held thousands of scrolls, but ordinary citizens could not simply walk in and borrow them.\n\nThe concept of a free library open to everyone began to take shape in the 19th century. In 1850, Britain passed the Public Libraries Act, which allowed local governments to fund libraries with taxpayer money. The United States followed soon after. The first major public library in America was established in Boston in 1854. Wealthy industrialist Andrew Carnegie later donated millions of dollars to build more than 2,500 libraries across the English-speaking world between 1883 and 1929.\n\nThese libraries played a crucial role in educating immigrants and the working class. For many people who could not afford books or formal schooling, the public library was their main source of knowledge. It offered not only books but also newspapers, magazines, and quiet study spaces.\n\nIn the 21st century, the role of public libraries has evolved significantly. While printed books remain important, libraries now also lend e-books, audiobooks, and even tools or musical instruments. They host computer classes, job-search workshops, and community events. Some critics argue that libraries are no longer needed in the age of the internet, but supporters point out that millions of people still depend on libraries for free internet access, expert help from librarians, and a safe public space.`,
+        questions: [
+          { q: 'According to the passage, who could typically use libraries in ancient times?', options: ['Anyone in the city', 'Only scholars, priests, or wealthy people', 'Children of all classes', 'Foreign travelers only'], correct: 1 },
+          { q: 'When did the modern public library concept begin to develop?', options: ['Around 300 BCE', 'In the 19th century', 'After World War II', 'In the 21st century'], correct: 1 },
+          { q: 'Approximately how many libraries did Andrew Carnegie help build?', options: ['250', '1,000', 'More than 2,500', '10,000'], correct: 2 },
+          { q: 'The word "crucial" in paragraph 3 is closest in meaning to:', options: ['Optional', 'Very important', 'Difficult', 'Temporary'], correct: 1 },
+          { q: 'Which of the following is NOT mentioned as a modern library service?', options: ['Lending e-books', 'Computer classes', 'Medical services', 'Job-search workshops'], correct: 2 },
+          { q: 'What do supporters say about libraries in the internet age?', options: ['They are completely outdated', 'They are only useful for children', 'They still provide essential services to many people', 'They should charge fees'], correct: 2 },
+          { q: 'What is the main idea of the passage?', options: ['Libraries were better in the past', 'Public libraries have evolved from elite institutions to inclusive community spaces', 'Andrew Carnegie was the most important figure in library history', 'The internet has replaced libraries'], correct: 1 }
+        ]
+      },
+      {
+        passage: `How Sleep Affects Memory\n\nMost people know that a good night's sleep makes them feel better, but scientists have discovered that sleep does much more than just restore energy. It plays a key role in how we form and store memories.\n\nWhen you learn something new — a vocabulary word, a piece of music, a new route home — the information is first held in a temporary part of the brain. During sleep, especially during the deep stages, the brain transfers this information to long-term storage. This process is called memory consolidation.\n\nResearch conducted at Harvard Medical School in the early 2000s showed that students who slept after studying performed significantly better on tests than those who stayed awake all night. Interestingly, a short nap of just 90 minutes was sometimes enough to produce noticeable improvements.\n\nSleep also helps the brain to filter out unimportant information. Each day we are bombarded with thousands of pieces of data — faces, sounds, conversations, news headlines. The brain cannot store all of it. During sleep, it appears to decide what to keep and what to discard. This is one reason why people who are sleep-deprived often feel mentally foggy: their brains have not had the chance to clean up.\n\nThe implications for students are obvious. Pulling an all-nighter before an exam may feel productive, but the research suggests that it can actually reduce performance. A regular sleep schedule of seven to nine hours per night is more likely to lead to good academic results than any amount of last-minute cramming.`,
+        questions: [
+          { q: 'What is the main topic of this passage?', options: ['How to sleep better', 'The relationship between sleep and memory', 'Why students fail exams', 'Harvard Medical School research'], correct: 1 },
+          { q: 'What is "memory consolidation"?', options: ['Forgetting unimportant things', 'Moving information from temporary to long-term storage', 'Studying for long hours', 'Taking naps'], correct: 1 },
+          { q: 'According to the Harvard study, what helped students perform better?', options: ['Staying awake to study more', 'Sleeping after studying', 'Drinking coffee', 'Studying in groups'], correct: 1 },
+          { q: 'How long was the short nap mentioned as beneficial?', options: ['15 minutes', '45 minutes', '90 minutes', '3 hours'], correct: 2 },
+          { q: 'The phrase "mentally foggy" most likely means:', options: ['Very smart', 'Unable to think clearly', 'Hungry', 'Tired physically'], correct: 1 },
+          { q: 'What does the passage say about pulling an all-nighter?', options: ['It is the best study strategy', 'It can actually reduce exam performance', 'It only works for some students', 'It improves long-term memory'], correct: 1 },
+          { q: 'How many hours of sleep does the passage recommend?', options: ['4-5 hours', '5-7 hours', '7-9 hours', '10-12 hours'], correct: 2 }
+        ]
+      }
+    ],
+    listening: [
+      {
+        transcript: `Professor: Good morning, everyone. Today we're going to talk about something many of you are probably doing right now — multitasking. Now, raise your hand if you think you're good at multitasking. Yes, quite a few of you. Well, I have some bad news. Research consistently shows that what we call multitasking is actually task-switching, and humans are surprisingly bad at it.\n\nStudent: But Professor, I write essays while listening to music all the time, and it works fine.\n\nProfessor: Good point. There's an important distinction here. Listening to instrumental music while writing is not really multitasking, because one task doesn't require active language processing. But try writing an essay while having a conversation, and you'll see your performance on both drop dramatically.\n\nStudent: So when I'm texting in class — hypothetically, of course — I'm not really learning?\n\nProfessor: Hypothetically, yes. Studies show that students who use laptops or phones for non-class purposes during lectures score about 11 percent lower on tests. And here's the surprising part: even students sitting next to them score lower, because the screens distract them too.\n\nStudent: That's a bit scary.\n\nProfessor: It should be. So my recommendation for this semester: when you're studying, study. When you're relaxing, relax. Don't try to do both at once.`,
+        questions: [
+          { q: 'What is the main topic of the lecture?', options: ['How to write better essays', 'The myth of human multitasking', 'How to use laptops in class', 'Music and concentration'], correct: 1 },
+          { q: 'According to the professor, what is multitasking really?', options: ['A natural human skill', 'Task-switching', 'A type of meditation', 'Listening to music'], correct: 1 },
+          { q: 'Why is listening to music while writing acceptable?', options: ['Music improves writing', 'One task does not require active language processing', 'Music makes you smarter', 'The professor likes music'], correct: 1 },
+          { q: 'By how much do test scores drop for students using phones for non-class purposes?', options: ['About 5%', 'About 11%', 'About 25%', 'About 50%'], correct: 1 },
+          { q: "What is the 'surprising part' the professor mentions?", options: ['Phones improve learning', 'Even nearby students who do not use phones score lower', 'Laptops are better than phones', 'Music helps concentration'], correct: 1 },
+          { q: "What is the professor's main advice?", options: ['Buy a new laptop', 'Do one thing at a time', 'Always listen to music', 'Never use technology'], correct: 1 }
+        ]
+      }
+    ],
+    speaking: [
+      { task: 'Independent Task', prompt: 'Describe a place in your hometown that you would recommend to a visitor. Explain why this place is special. You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Clear topic statement', 'Specific details and examples', 'Logical organization', 'Fluent delivery'] },
+      { task: 'Independent Task', prompt: 'Some students prefer to study alone, while others prefer to study in groups. Which do you prefer and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Clear preference stated', 'Two or more reasons', 'Specific examples', 'Coherent structure'] }
+    ],
+    writing: [
+      { task: 'Integrated Writing', prompt: 'Imagine you just read a passage and listened to a lecture about whether universities should require all students to take physical education classes. The passage argues YES (it improves health and reduces stress), while the lecture argues NO (students should choose their own activities and many already exercise outside class). Write a 150-225 word response summarizing the lecture\'s points and how they cast doubt on the reading.', minWords: 150, criteria: ['Accurately summarizes lecture points', 'Explains how each lecture point challenges the reading', 'Organized structure', 'Clear grammar and vocabulary'] },
+      { task: 'Independent Writing', prompt: 'Do you agree or disagree with the following statement? "Social media has done more harm than good for young people." Use specific reasons and examples to support your answer. Write at least 300 words.', minWords: 300, criteria: ['Clear thesis statement', 'Well-developed paragraphs', 'Specific examples', 'Variety in sentence structure', 'Effective vocabulary'] }
+    ]
+  },
+
+  exam2: {
+    id: 'exam2',
+    title: 'Practice Test 2 — Society & Environment',
+    level: 'B2',
+    description: 'Intermediate level. Topics on environment, social issues, and basic academic content.',
+    reading: [
+      {
+        passage: `The Rise of Urban Gardening\n\nIn recent decades, more and more people living in cities have started growing their own food. This trend, often called urban gardening or urban agriculture, includes everything from small herb gardens on apartment balconies to large community gardens on rooftops and in vacant lots. While urban gardening might seem like a modern hobby, the practice has historical roots, particularly during World War II, when governments encouraged citizens to plant "victory gardens" to support the food supply.\n\nToday, the motivations are different but equally compelling. One major reason is the desire to eat fresh, healthy food. Vegetables purchased at supermarkets are often picked before they are ripe and transported thousands of kilometers, losing flavor and nutrients along the way. A tomato grown on your own balcony, by contrast, can be eaten the moment it ripens.\n\nEnvironmental concerns also play a role. Transporting food creates significant carbon emissions, and large-scale agriculture often relies on chemical pesticides and fertilizers. Urban gardens, especially organic ones, reduce these impacts. They also help cool cities, as plants release moisture and create shade.\n\nThere are social benefits as well. Community gardens bring neighbors together, providing a space where people of different ages and backgrounds can work toward a common goal. In some neighborhoods, these gardens have become important social hubs, hosting events, classes, and even weddings.\n\nHowever, urban gardening is not without challenges. City soil may be contaminated with lead or other pollutants, requiring gardeners to use raised beds with clean soil. Water can be expensive, and pests like rats and pigeons can be persistent problems. Despite these difficulties, the urban gardening movement continues to grow, and many cities now offer training programs and small grants to support new gardeners.`,
+        questions: [
+          { q: 'When did "victory gardens" become popular?', options: ['In the 19th century', 'During World War II', 'In the 1960s', 'In the 21st century'], correct: 1 },
+          { q: 'According to the passage, why do supermarket vegetables often lack flavor?', options: ['They are too expensive', 'They are picked before ripening and transported far', 'They are grown in cities', 'They contain too much water'], correct: 1 },
+          { q: 'The word "compelling" in paragraph 2 is closest in meaning to:', options: ['Weak', 'Convincing', 'Strange', 'Old-fashioned'], correct: 1 },
+          { q: 'How do urban gardens help cities environmentally?', options: ['They use a lot of water', 'They release moisture and provide shade', 'They attract more cars', 'They increase city temperatures'], correct: 1 },
+          { q: 'What social benefit do community gardens provide?', options: ['They make money for the city', 'They bring neighbors of different backgrounds together', 'They replace schools', 'They reduce the need for parks'], correct: 1 },
+          { q: 'Why might urban gardeners need raised beds?', options: ['Because they look attractive', 'Because city soil may be contaminated', 'Because plants grow faster in them', 'Because the law requires them'], correct: 1 },
+          { q: 'What is the overall tone of the passage toward urban gardening?', options: ['Critical and negative', 'Generally positive while acknowledging challenges', 'Completely neutral with no opinion', 'Doubtful and skeptical'], correct: 1 }
+        ]
+      },
+      {
+        passage: `The Octopus: An Unlikely Genius\n\nOctopuses are among the most intelligent creatures in the ocean — and possibly in the entire animal kingdom. This is surprising for several reasons. First, they are invertebrates, meaning they have no backbone. Most intelligent animals, like dolphins, primates, and crows, are vertebrates. Second, octopuses live alone and have short lifespans, typically only one to three years. Intelligent animals usually have long lives and complex social groups.\n\nSo how do we know octopuses are smart? Scientists have conducted many experiments. In one famous study, an octopus learned to unscrew the lid of a jar to reach food inside. Others have learned to open child-proof bottles, navigate mazes, and even recognize individual human faces — distinguishing the researcher who fed them from the one who occasionally bothered them.\n\nPerhaps the most remarkable feature of octopus intelligence is that it is distributed throughout their body. While humans and most animals do all their thinking with one central brain, octopuses have about two-thirds of their neurons located in their eight arms. Each arm can taste, touch, and make decisions somewhat independently. Scientists describe this as a form of "distributed cognition" — something almost unimaginable from a human point of view.\n\nOctopuses are also masters of disguise. They can change color and even texture in less than a second, blending into rocks, coral, or sand. Strangely, octopuses appear to be colorblind, so scientists are still investigating how they manage to match their surroundings so accurately.\n\nThe study of octopus intelligence challenges our traditional ideas about what minds are and how they work. If a creature so different from us can be intelligent in its own way, we may need to expand our definition of intelligence itself.`,
+        questions: [
+          { q: 'Why is octopus intelligence surprising?', options: ['They live in cold water', 'They are invertebrates with short, solitary lives', 'They have no eyes', 'They never move'], correct: 1 },
+          { q: 'What ability did the octopus demonstrate in the famous jar experiment?', options: ['Counting to ten', 'Unscrewing a lid to reach food', 'Communicating with humans', 'Building a nest'], correct: 1 },
+          { q: 'According to the passage, octopuses can:', options: ['Live for 50 years', 'Recognize individual human faces', 'Speak a simple language', 'Form large social groups'], correct: 1 },
+          { q: 'Where are most of an octopus\'s neurons located?', options: ['In its central brain', 'In its eight arms', 'In its eyes', 'In its skin'], correct: 1 },
+          { q: 'The term "distributed cognition" refers to:', options: ['Sharing information with others', 'Thinking that happens in multiple parts of the body', 'Sleeping at different times', 'Eating in different places'], correct: 1 },
+          { q: 'What is strange about how octopuses camouflage?', options: ['They take hours to change color', 'They appear to be colorblind', 'They only do it at night', 'They cannot change shape'], correct: 1 },
+          { q: 'What does the passage suggest about intelligence in general?', options: ['Only humans are truly intelligent', 'Our definition of intelligence may need to expand', 'Intelligence is impossible to measure', 'All animals are equally intelligent'], correct: 1 }
+        ]
+      }
+    ],
+    listening: [
+      {
+        transcript: `Advisor: Hi Marcus, come in. So, you wanted to talk about your course schedule for next semester?\n\nStudent: Yeah, I'm a bit confused. I'm a biology major, but I'm really interested in environmental policy. I don't know if I should add a minor or just take electives.\n\nAdvisor: That's a great question. Let me ask first — are you thinking about graduate school?\n\nStudent: I'm not sure. Maybe. I might want to work for a few years first.\n\nAdvisor: Okay. Here's my thinking. A formal minor in Environmental Policy looks good on a graduate school application because it shows commitment. But it requires six specific courses, some of which have prerequisites. That's a real commitment of credits.\n\nStudent: How many electives would I have without a minor?\n\nAdvisor: Looking at your record, you'd have room for about four free electives over your remaining time. You could use those for environmental policy courses without doing the formal minor.\n\nStudent: So basically, the difference is between a structured minor with a transcript notation, or four flexible courses with no official recognition?\n\nAdvisor: Exactly. My suggestion: if you're seriously considering graduate work in environmental science or policy, do the minor. If you're more curious and want to keep your options open, take the electives. There's also a third option — you could declare the minor now and drop it later if it gets too heavy.\n\nStudent: That sounds smart. I'll think about it and email you next week.\n\nAdvisor: Perfect. And do come back if you have more questions.`,
+        questions: [
+          { q: 'What is the main purpose of the conversation?', options: ['To complain about a professor', 'To discuss adding a minor or taking electives', 'To change majors', 'To apply for graduate school'], correct: 1 },
+          { q: 'What is the student\'s major?', options: ['Environmental Policy', 'Biology', 'Chemistry', 'Political Science'], correct: 1 },
+          { q: 'According to the advisor, what is one benefit of doing a formal minor?', options: ['It costs less money', 'It shows commitment to graduate schools', 'It is easier than electives', 'It guarantees a job'], correct: 1 },
+          { q: 'How many free electives does the student have available?', options: ['Two', 'Four', 'Six', 'Eight'], correct: 1 },
+          { q: 'What "third option" does the advisor suggest?', options: ['Switch majors completely', 'Declare the minor now and drop it later if needed', 'Take a year off', 'Study abroad'], correct: 1 },
+          { q: 'How does the student leave the conversation?', options: ['Angry and confused', 'Having made a final decision', 'Planning to think and follow up next week', 'Refusing the advice'], correct: 2 }
+        ]
+      }
+    ],
+    speaking: [
+      { task: 'Independent Task', prompt: 'Some people prefer to live in big cities, while others prefer small towns. Which would you choose and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Clear choice stated', 'Two or three supporting reasons', 'Concrete examples', 'Fluent delivery'] },
+      { task: 'Independent Task', prompt: 'Describe a skill that you think every young person should learn before becoming an adult. Explain why this skill is important. You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Identifies skill clearly', 'Explains importance with reasons', 'Personal or general examples', 'Coherent organization'] }
+    ],
+    writing: [
+      { task: 'Integrated Writing', prompt: 'Imagine you just read a passage and listened to a lecture about whether companies should allow employees to work from home permanently. The passage argues IN FAVOR (less commuting, better work-life balance, lower office costs), while the lecture argues AGAINST (reduced collaboration, harder to mentor new employees, blurred boundaries between work and home). Write a 150-225 word response summarizing the lecture\'s points and how they cast doubt on the reading.', minWords: 150, criteria: ['Accurate summary of lecture', 'Connects each lecture point to a reading argument', 'Organized paragraphs', 'Clear language'] },
+      { task: 'Independent Writing', prompt: 'Do you agree or disagree with the following statement? "Children today have an easier life than children did 50 years ago." Use specific reasons and examples to support your answer. Write at least 300 words.', minWords: 300, criteria: ['Clear position', 'Three or more developed reasons', 'Specific examples', 'Strong introduction and conclusion', 'Varied vocabulary'] }
+    ]
+  },
+
+  exam3: {
+    id: 'exam3',
+    title: 'Practice Test 3 — Science & Discovery',
+    level: 'C1',
+    description: 'Upper-intermediate level. Academic topics in biology, physics, and history with more nuanced language.',
+    reading: [
+      {
+        passage: `The Discovery of Penicillin and Its Aftermath\n\nThe story of penicillin is often told as a tale of pure serendipity, but the reality is considerably more nuanced. In September 1928, the Scottish bacteriologist Alexander Fleming returned to his laboratory at St. Mary's Hospital in London after a holiday and noticed that one of his bacterial cultures had been contaminated by a mold. Around the mold, the bacteria had died. Fleming identified the mold as a species of Penicillium and observed that it produced a substance capable of killing certain types of bacteria. He named this substance penicillin.\n\nCrucially, Fleming did not transform penicillin into a usable drug. He published his findings in 1929, but the paper attracted little attention, and Fleming himself struggled to purify the compound. Penicillin appeared to be unstable, difficult to extract, and impractical for mass production. For more than a decade, the discovery languished in relative obscurity.\n\nIt was not until the late 1930s that two researchers at Oxford University, Howard Florey and Ernst Chain, revived interest in penicillin. Working with a team that included the biochemist Norman Heatley, they developed techniques to purify the substance in usable quantities. In 1941, they tested it on a police officer suffering from a severe infection. The patient improved dramatically — until the limited supply of penicillin ran out, after which he relapsed and died. Nevertheless, the experiment demonstrated that penicillin worked.\n\nThe Second World War accelerated everything. American pharmaceutical companies, financed by the U.S. government, scaled up production using deep-tank fermentation methods. By 1944, enough penicillin was available to treat all the wounded Allied soldiers on D-Day. Penicillin saved hundreds of thousands of lives during the war and afterwards transformed civilian medicine, making previously fatal infections routinely treatable.\n\nThe Nobel Prize for Physiology or Medicine was awarded in 1945 to Fleming, Florey, and Chain. The omission of Heatley, whose practical genius had made mass production possible, remains a frequently cited example of how scientific recognition can be unfairly distributed. The penicillin story has come to symbolize both the unpredictable nature of scientific breakthroughs and the immense collaborative effort required to translate a laboratory observation into a medicine that reaches millions of patients.`,
+        questions: [
+          { q: 'Why does the author suggest the story of penicillin is "more nuanced" than usually told?', options: ['Because Fleming did not actually discover the mold', 'Because the discovery required far more than one accidental moment', 'Because penicillin was never effective', 'Because the mold contamination was intentional'], correct: 1 },
+          { q: 'What was the immediate response to Fleming\'s 1929 paper?', options: ['Massive funding from governments', 'Little attention and limited follow-up', 'Worldwide enthusiasm', 'Legal disputes over patents'], correct: 1 },
+          { q: 'According to the passage, the 1941 police-officer experiment:', options: ['Failed to show any improvement', 'Proved penicillin works but also revealed supply limitations', 'Led to the immediate cure of the patient', 'Was unethical and was stopped'], correct: 1 },
+          { q: 'The word "scaled up" in paragraph 4 most nearly means:', options: ['Reduced significantly', 'Increased to a large level', 'Standardized through testing', 'Patented for profit'], correct: 1 },
+          { q: 'Why is Norman Heatley mentioned in the final paragraph?', options: ['To highlight that he discovered penicillin first', 'To illustrate how scientific credit can be unequally distributed', 'To prove the Nobel Prize is corrupt', 'To explain a laboratory technique he opposed'], correct: 1 },
+          { q: 'What does the author imply about scientific breakthroughs?', options: ['They are entirely accidental', 'They emerge cleanly from a single brilliant mind', 'They typically require both insight and substantial collective effort', 'They cannot be predicted or planned at all'], correct: 2 },
+          { q: 'Which of the following best summarizes the passage?', options: ['A simple chronological account of one man\'s lucky discovery', 'A reassessment of penicillin\'s development emphasizing collaboration and circumstance', 'An argument that Fleming did not deserve the Nobel Prize', 'A technical explanation of fermentation methods'], correct: 1 }
+        ]
+      },
+      {
+        passage: `Plate Tectonics: From Heresy to Foundation\n\nFor most of human history, the continents seemed permanent, unmoving features of the planet. The notion that vast landmasses might drift slowly across the globe was, until surprisingly recently, dismissed as wild speculation. The transformation of this idea from heresy to scientific orthodoxy is one of the most striking conceptual revolutions in the history of science.\n\nThe German meteorologist Alfred Wegener proposed his theory of continental drift in 1912. He had noticed, as others had before him, that the coastlines of South America and Africa appeared to fit together like puzzle pieces. He also gathered fossil evidence: identical extinct species had been found on continents separated by oceans, suggesting that those continents had once been joined. Wegener proposed that all the continents had at one time formed a single supercontinent, which he called Pangaea, before slowly breaking apart.\n\nThe reception was largely hostile. Geologists pointed out, with some justification, that Wegener could not provide a plausible mechanism. By what force could continents possibly plow through solid ocean crust? Wegener's tentative suggestions — involving tidal forces and centrifugal effects — were easily dismissed by physicists as quantitatively inadequate. For roughly four decades, continental drift remained a fringe idea.\n\nThe breakthrough came in the 1950s and 1960s, when oceanographers began mapping the seafloor in detail. They discovered a vast underwater mountain range, the Mid-Atlantic Ridge, running down the middle of the Atlantic Ocean. Magnetic readings of the rocks on either side of the ridge revealed mirror-image stripes, as if new ocean floor were continuously being created at the ridge and pushed outward. The principle of seafloor spreading provided the missing mechanism: continents do not plow through the crust; rather, the crust itself moves, carrying continents along with it.\n\nBy the late 1960s, the theory had been refined into modern plate tectonics, which divides Earth's outer shell into roughly a dozen rigid plates that interact at their boundaries — colliding, sliding past one another, or pulling apart. The theory now elegantly explains earthquakes, volcanoes, mountain formation, and the distribution of fossils, in a single coherent framework.\n\nWegener did not live to see his vindication; he died on a Greenland expedition in 1930. His story is sometimes invoked as a cautionary tale against the premature rejection of unconventional ideas, though it is worth noting that the geological community of his time had legitimate scientific reasons for skepticism. The eventual acceptance of plate tectonics required not stubborn belief but new evidence — evidence that could not have existed without decades of further investigation.`,
+        questions: [
+          { q: 'What does the author mean by calling plate tectonics a "conceptual revolution"?', options: ['It involved political conflict', 'It fundamentally changed how scientists understood the Earth', 'It was rejected by the public', 'It happened in a single decade'], correct: 1 },
+          { q: 'Which kind of evidence did Wegener originally rely on?', options: ['Magnetic stripes in the ocean floor', 'Computer simulations', 'Coastline shapes and fossil distribution', 'Volcanic eruptions'], correct: 2 },
+          { q: 'Why did most geologists initially reject Wegener\'s theory?', options: ['They disliked Germans', 'He could not explain how continents could move through ocean crust', 'They lacked basic fossil evidence', 'Wegener kept his data secret'], correct: 1 },
+          { q: 'What did oceanographers discover in the 1950s and 1960s?', options: ['That the Earth is hollow', 'A vast underwater ridge with mirror-image magnetic stripes', 'Buried ancient cities', 'New species of fish'], correct: 1 },
+          { q: 'What does "seafloor spreading" explain that Wegener could not?', options: ['Why the ocean is salty', 'How continents can move without plowing through crust', 'Why volcanoes erupt only at night', 'How fossils are formed'], correct: 1 },
+          { q: 'The author\'s final paragraph suggests that:', options: ['Scientists should always trust unconventional ideas', 'The rejection of Wegener was unreasonable', 'Scientific skepticism in Wegener\'s time was legitimate; acceptance required new evidence', 'Plate tectonics is still controversial'], correct: 2 },
+          { q: 'The word "vindication" in the final paragraph most nearly means:', options: ['Confusion', 'Justification', 'Punishment', 'Promotion'], correct: 1 },
+          { q: 'What is the author\'s overall purpose?', options: ['To criticize Wegener\'s opponents', 'To explain how a once-rejected theory became a scientific foundation', 'To argue that all science is unreliable', 'To list modern earthquakes'], correct: 1 }
+        ]
+      }
+    ],
+    listening: [
+      {
+        transcript: `Professor: Today we'll discuss a phenomenon that has fascinated linguists for decades — language death. By some estimates, nearly half of the world's 7,000 languages are at risk of disappearing within this century. Now, what does it actually mean for a language to die?\n\nA language is generally considered "dead" when it has no living native speakers. This can happen suddenly — a tsunami or genocide wiping out a small community — or, far more commonly, gradually, when the younger generation no longer learns the language from their parents. This gradual process is sometimes called language shift.\n\nThere are several reasons languages decline. Economic pressure is enormous. If speaking the dominant national language gives you access to education and employment, parents may discourage their children from speaking the heritage language. Government policies have also played a role; in many countries, indigenous children were once forbidden to speak their native languages in schools.\n\nNow, why does this matter? Some students often ask, "If everyone speaks one language, isn't that more efficient?" There are several answers. First, languages encode unique ways of categorizing the world. The Inuit language Inuktitut, for example, has remarkably precise distinctions for types of snow and ice — distinctions that matter for survival in Arctic environments. When that language disappears, that accumulated ecological knowledge often disappears with it.\n\nSecond, languages carry oral histories, songs, and entire cultural identities. Losing a language is, in many cases, losing a worldview.\n\nThird — and this is more controversial — some linguists argue that human cognition itself is shaped by language. If we lose linguistic diversity, we may be narrowing the range of ways human minds can be organized.\n\nNow, there is some good news. Revitalization efforts have succeeded in cases like Hebrew, Welsh, and Maori. These cases tell us that language death is not inevitable. It requires political will, financial resources, and — most crucially — communities who want their language to live.`,
+        questions: [
+          { q: 'What is the main topic of the lecture?', options: ['How to learn a new language', 'The death of languages and why it matters', 'Why English is dominant', 'The history of Inuktitut'], correct: 1 },
+          { q: 'According to the professor, how does language death usually happen?', options: ['Suddenly through natural disasters', 'Gradually, when younger generations stop learning the language', 'Through government bans only', 'Through written records being destroyed'], correct: 1 },
+          { q: 'What is "language shift"?', options: ['Translating one language into another', 'A community gradually switching to another language', 'A word changing meaning over time', 'Mixing two languages together'], correct: 1 },
+          { q: 'According to the professor, why is the case of Inuktitut significant?', options: ['It is the oldest language in the world', 'Its precise snow/ice terms reflect ecological knowledge that could be lost', 'It is easier to learn than other languages', 'It has no written form'], correct: 1 },
+          { q: 'Which of the following is described as a "more controversial" claim?', options: ['That languages can disappear', 'That language shapes human cognition', 'That parents influence children\'s language', 'That Hebrew was revived'], correct: 1 },
+          { q: 'What does the professor identify as the most crucial factor in revitalization?', options: ['Government funding', 'International recognition', 'Communities who want their language to live', 'Famous linguists'], correct: 2 },
+          { q: 'Which languages are mentioned as successful revitalization cases?', options: ['Hebrew, Welsh, and Maori', 'Latin, Greek, and Sanskrit', 'Inuktitut, English, and Mandarin', 'Spanish, French, and German'], correct: 0 }
+        ]
+      }
+    ],
+    speaking: [
+      { task: 'Independent Task', prompt: 'Some universities require students to complete an internship or work placement before graduating. Do you think this should be mandatory? Explain why or why not. You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Clear position stated', 'At least two well-developed reasons', 'Concrete examples', 'Fluent and natural delivery', 'Varied vocabulary'] },
+      { task: 'Independent Task', prompt: 'Some people believe that artificial intelligence will create more jobs than it eliminates; others believe the opposite. Which view do you find more convincing and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Articulates a clear stance', 'Acknowledges or addresses the opposing view', 'Specific reasoning', 'Good cohesion'] }
+    ],
+    writing: [
+      { task: 'Integrated Writing', prompt: 'Imagine you just read a passage and listened to a lecture about whether tourism in fragile ecosystems should be banned. The passage argues YES (tourism damages wildlife and ecosystems irreversibly), while the lecture argues NO (regulated eco-tourism funds conservation, educates visitors, and provides income to local communities that protect the land). Write a 150-225 word response explaining how the lecture challenges each point in the reading.', minWords: 150, criteria: ['Precise summary of lecture arguments', 'Explicit linking of lecture points to reading claims', 'Logical paragraph structure', 'Accurate grammar and academic vocabulary'] },
+      { task: 'Independent Writing', prompt: 'Do you agree or disagree with the following statement? "Governments should invest more in space exploration than in solving problems on Earth." Use specific reasons and examples to support your answer. Write at least 300 words.', minWords: 300, criteria: ['Sophisticated thesis', 'Multiple developed reasons with supporting evidence', 'Acknowledgment of counterarguments', 'Coherent transitions', 'Range of advanced vocabulary and complex sentences'] }
+    ]
+  },
+
+  exam4: {
+    id: 'exam4',
+    title: 'Practice Test 4 — Mind & Society',
+    level: 'C1',
+    description: 'Upper-intermediate level. Topics in psychology, economics, and social sciences with nuanced argumentation.',
+    reading: [
+      {
+        passage: `The Replication Crisis in Psychology\n\nFor decades, scientific psychology presented itself as a discipline of cumulative knowledge: experiment after experiment, finding after finding, building toward a richer understanding of the mind. In the early 2010s, however, this confident self-image was profoundly shaken. A wave of large-scale replication projects revealed that many of the field's celebrated findings could not be reproduced when other researchers attempted the same experiments. This phenomenon became known as the replication crisis.\n\nOne of the most influential projects, the Reproducibility Project: Psychology, attempted to replicate 100 studies that had been published in top-tier journals. The results, published in 2015, were sobering: only about 36 percent of the replications produced statistically significant findings consistent with the originals, and the average effect size in the replications was roughly half that of the original studies.\n\nSeveral causes contributed to the crisis. One is the widespread practice of "p-hacking" — adjusting experimental procedures, dropping unfavorable data, or running multiple analyses until a statistically significant result emerges. Another is publication bias: journals tend to favor novel, positive findings over null results or replications, creating an incentive for researchers to overstate the certainty of their conclusions. Small sample sizes have also been pervasive in psychology research, increasing the likelihood that any single positive finding is, in fact, a false positive.\n\nThe crisis has provoked a substantial methodological reform movement. Pre-registration — in which researchers publicly commit to their hypotheses and analysis plans before collecting data — has become increasingly common, reducing the room for after-the-fact statistical maneuvering. Some journals now explicitly welcome replication studies and null results. Open data practices, which allow other researchers to scrutinize raw data, are gradually being adopted.\n\nCritics of the crisis narrative argue that the difficulties of replication have been overstated and that psychology is no less reliable than other empirical sciences. They point out that even in physics and biology, individual studies often fail to replicate; science progresses through accumulated evidence, not single experiments. Supporters of reform respond that this defense, while not entirely without merit, risks complacency. The reforms underway, they argue, will benefit psychology even if the original crisis was somewhat exaggerated.\n\nWhatever its ultimate scale, the replication crisis has produced an unusually candid moment of self-examination within psychology. It is a useful reminder that science is not a fixed body of facts but a continually self-correcting human enterprise, vulnerable to bias and improvable through transparency.`,
+        questions: [
+          { q: 'According to the passage, what was the main finding of the Reproducibility Project: Psychology?', options: ['All 100 studies were successfully replicated', 'About 36 percent of replications matched the original findings', 'The studies were fabricated', 'Effect sizes were larger than originally reported'], correct: 1 },
+          { q: 'What is "p-hacking"?', options: ['A type of cyberattack on research databases', 'Manipulating analyses until a significant result appears', 'Stealing data from other researchers', 'A statistical technique used in physics'], correct: 1 },
+          { q: 'According to the passage, publication bias means that:', options: ['Journals refuse to publish anything new', 'Journals favor novel positive findings over null results', 'Researchers are biased against journals', 'Journals are owned by governments'], correct: 1 },
+          { q: 'What is "pre-registration" intended to prevent?', options: ['Plagiarism in published papers', 'Researchers changing hypotheses after seeing the data', 'Unauthorized access to journals', 'Conflicts of interest in funding'], correct: 1 },
+          { q: 'How do critics of the "crisis narrative" defend the field?', options: ['By denying any studies failed to replicate', 'By arguing that all sciences have similar issues and progress through accumulated evidence', 'By blaming individual researchers', 'By calling for psychology to be banned'], correct: 1 },
+          { q: 'How do reform supporters respond to those critics?', options: ['They accept the critics\' view entirely', 'They argue that the critics\' defense risks complacency', 'They demand the firing of all critics', 'They ignore the criticism'], correct: 1 },
+          { q: 'The word "candid" in the final paragraph most nearly means:', options: ['Hidden', 'Honest and open', 'Brief', 'Aggressive'], correct: 1 },
+          { q: 'What is the author\'s overall view of the replication crisis?', options: ['It proves psychology is not a real science', 'It is a useful, if uncomfortable, opportunity for scientific self-correction', 'It is a media exaggeration with no real basis', 'It is unique to psychology and proves the field is broken'], correct: 1 }
+        ]
+      },
+      {
+        passage: `The Paradox of Choice\n\nA central assumption of modern consumer economics is straightforward: more choice is better. If a supermarket offers fifty kinds of jam instead of five, consumers can find something closer to their precise preferences. If a job-seeker has access to thousands of postings rather than a few dozen, the match between worker and employer should improve. Choice, on this view, is the engine of welfare.\n\nBeginning in the late 1990s, however, psychologists and behavioral economists began to challenge this assumption. The most prominent skeptic, Barry Schwartz, popularized the phrase "the paradox of choice" in a 2004 book. Drawing on a body of experimental work, he argued that beyond a certain point, additional options can actually decrease both satisfaction and decision quality.\n\nThe classic study, conducted by Sheena Iyengar and Mark Lepper in 2000, set up two displays in an upscale grocery store. One offered 24 varieties of jam; the other offered just 6. The larger display attracted more attention, but customers facing 24 options were ten times less likely to actually purchase a jam. The researchers concluded that abundance, far from being motivating, was paralyzing.\n\nSubsequent research has identified several mechanisms behind this effect. Cognitive overload is one: comparing many options demands attention, energy, and working memory, all of which are limited. A second mechanism is anticipated regret: with more alternatives, consumers worry that whichever option they choose, a better one might have been available. A third is escalating expectations: when one expects to find something perfect, even a good outcome can feel disappointing.\n\nThe paradox-of-choice literature has not gone unchallenged. Several meta-analyses have found that the effect, when it exists, is modest and depends on context. In some experiments, larger choice sets produce no harm at all, and in others they even improve outcomes — particularly when consumers have clear preferences in advance or when the options are well-organized.\n\nWhat remains broadly accepted is that the relationship between choice and welfare is not simple. The naive view that more is always better has been replaced by a more careful question: under what conditions does more choice help, and under what conditions does it hurt? The answer appears to depend on the chooser's expertise, the time available, the importance of the decision, and how the options are presented. Choice architecture — the deliberate design of decision environments — has become a major topic in policy and business alike.`,
+        questions: [
+          { q: 'What is the "central assumption of modern consumer economics" described at the start?', options: ['That advertising is always harmful', 'That offering more choice improves consumer welfare', 'That governments should restrict consumer choice', 'That all consumers behave irrationally'], correct: 1 },
+          { q: 'In the Iyengar and Lepper jam study, customers who saw 24 varieties:', options: ['Were ten times more likely to buy', 'Were ten times less likely to actually purchase', 'Bought the same amount as the small-display group', 'Refused to look at the display'], correct: 1 },
+          { q: '"Cognitive overload" in the passage refers to:', options: ['A computer being slow', 'The exhaustion of attention and working memory from comparing many options', 'A brain disease caused by shopping', 'Being too tired to leave home'], correct: 1 },
+          { q: 'What is "anticipated regret"?', options: ['Regret about past purchases', 'The worry, before choosing, that a better option might exist', 'A type of consumer warranty', 'Sadness after returning a product'], correct: 1 },
+          { q: 'According to the passage, how have meta-analyses affected the paradox-of-choice theory?', options: ['They have completely disproved it', 'They suggest the effect is modest and context-dependent', 'They have not been conducted', 'They prove the effect is universal and large'], correct: 1 },
+          { q: 'According to the passage, when is more choice less likely to hurt?', options: ['When consumers have no preferences', 'When consumers have clear preferences and options are well-organized', 'When the products are very expensive', 'When the options are all identical'], correct: 1 },
+          { q: 'The term "choice architecture" refers to:', options: ['Building shopping malls', 'The deliberate design of how decisions are presented', 'Government regulations on choice', 'A theory rejected by economists'], correct: 1 },
+          { q: 'Which sentence best captures the author\'s conclusion?', options: ['More choice is always harmful', 'More choice is always beneficial', 'The relationship between choice and welfare is conditional, not simple', 'Choice has no effect on welfare'], correct: 2 }
+        ]
+      }
+    ],
+    listening: [
+      {
+        transcript: `Professor: Today let's tackle a concept many of you have probably heard in passing but may not fully understand — opportunity cost. It's deceptively simple. Anyone want to take a shot at defining it?\n\nStudent A: Isn't it the cost of doing something instead of something else?\n\nProfessor: That's the right intuition, but let's make it more precise. The opportunity cost of any decision is the value of the next-best alternative you give up. Not just any alternative — the next best one. So if you have three options and you pick the first, your opportunity cost is the second one, not the third.\n\nStudent B: Why does that matter, though? It feels kind of abstract.\n\nProfessor: Excellent challenge. Let me give you a concrete example. Suppose you have one evening free. You can study for tomorrow's exam, you can go to a concert, or you can sleep early. You decide to study. The financial cost of studying is essentially zero — but the opportunity cost is whichever of those other two options you would have chosen second. If you would otherwise have gone to the concert, the opportunity cost of studying is the concert.\n\nStudent A: So opportunity cost is not always money.\n\nProfessor: Right, and that's why this concept is so powerful. It applies to time, attention, decisions of every kind. When governments choose to spend on highways, the opportunity cost might be hospitals or schools. When firms choose to invest in research, the opportunity cost might be paying dividends to shareholders. The concept forces you to acknowledge that every choice has a hidden price.\n\nStudent B: But isn't this just common sense?\n\nProfessor: That's a fair pushback, but consider how often people ignore it. A free public concert isn't really free if it takes three hours of your time. An "extra" course at university isn't really extra if it means dropping another opportunity. Behavioral economists have found that humans systematically underweight opportunity costs because they are invisible. We see the price tag; we don't see the foregone alternative.\n\nStudent A: That's actually a bit unsettling.\n\nProfessor: It should be. The discipline of thinking explicitly about opportunity cost is, I'd argue, one of the most valuable mental habits you can develop. Not just for economics — for life.`,
+        questions: [
+          { q: 'What is the precise definition of opportunity cost given by the professor?', options: ['The total cost of all alternatives', 'The value of the next-best alternative given up', 'The financial cost of the chosen option', 'The cost minus the benefit'], correct: 1 },
+          { q: 'In the example given, what is the opportunity cost of studying?', options: ['Zero, because studying is free', 'The next-best alternative (the concert)', 'All other options combined', 'Sleeping early'], correct: 1 },
+          { q: 'According to the professor, the opportunity cost concept is "powerful" because:', options: ['It only applies to large purchases', 'It applies to time, attention, and many kinds of decisions', 'It eliminates all uncertainty in decisions', 'It guarantees the best choice'], correct: 1 },
+          { q: 'When the professor mentions governments choosing highways, what is the opportunity cost?', options: ['The next-best alternative use of that money, such as hospitals or schools', 'The cost of building the highway', 'Future highway maintenance', 'Public criticism'], correct: 0 },
+          { q: 'Why, according to behavioral economists, do people underweight opportunity costs?', options: ['Because they are too expensive', 'Because foregone alternatives are invisible compared to visible price tags', 'Because they are easy to calculate', 'Because economists hide them'], correct: 1 },
+          { q: 'What does the professor mean when he says a free concert "isn\'t really free"?', options: ['Concerts usually charge admission', 'It still costs the time and attention you could spend elsewhere', 'You need to pay for transportation', 'You may not enjoy it'], correct: 1 },
+          { q: 'What is the professor\'s broader claim about opportunity-cost thinking?', options: ['It is only useful in economics class', 'It is one of the most valuable mental habits for life in general', 'It tends to make people unhappy and should be avoided', 'It is too abstract to be practical'], correct: 1 }
+        ]
+      }
+    ],
+    speaking: [
+      { task: 'Independent Task', prompt: 'Some people argue that scientific research should be funded entirely by governments to keep it free from commercial bias. Others argue that private funding drives innovation. Which view do you support, and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Sophisticated positioning', 'Substantive reasoning', 'Acknowledgement of trade-offs', 'Fluency and grammatical range'] },
+      { task: 'Independent Task', prompt: 'Describe a piece of technology that you believe has had an unintended negative effect on society. Explain what the effect is and why it happened. You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Specific technology identified', 'Clear explanation of negative effect', 'Plausible causal account', 'Use of precise vocabulary'] }
+    ],
+    writing: [
+      { task: 'Integrated Writing', prompt: 'Imagine you just read a passage and listened to a lecture about whether universities should replace traditional lectures with online videos. The passage argues IN FAVOR (students can re-watch material, learn at their own pace, and lectures are inefficient for transmitting information), while the lecture argues AGAINST (live lectures support spontaneous questions, build community, enable real-time adaptation by the professor, and improve student accountability). Write a 150-225 word response analyzing how the lecture challenges the reading.', minWords: 150, criteria: ['Precise summary of lecture', 'Point-by-point engagement with the reading', 'Sophisticated transitions', 'Accurate use of complex grammar'] },
+      { task: 'Independent Writing', prompt: 'Some people believe that economic growth should be a country\'s top priority; others argue that environmental protection should take precedence even at the cost of economic growth. Which view do you support, and why? Use specific reasons and examples. Write at least 300 words.', minWords: 300, criteria: ['Nuanced thesis', 'Multiple developed arguments with examples', 'Engagement with counterarguments', 'Wide vocabulary range', 'Varied and complex sentence structures'] }
+    ]
+  },
+
+  exam5: {
+    id: 'exam5',
+    title: 'Practice Test 5 — Ideas & History',
+    level: 'C1',
+    description: 'Upper-intermediate level. Demanding topics in history, philosophy, and the arts with abstract argumentation.',
+    reading: [
+      {
+        passage: `The Printing Press and the Reshaping of Europe\n\nFew inventions have transformed a civilization as profoundly as Johannes Gutenberg's movable-type printing press, introduced in Europe around 1450. Before Gutenberg, books in Europe were produced almost exclusively by hand. A single Bible could take a skilled monk a full year to copy, and the resulting volumes were luxury items, accessible only to monasteries, universities, and the wealthy. Within fifty years of Gutenberg's innovation, an estimated twenty million printed books circulated across Europe — more than all the manuscripts produced in the entire preceding millennium.\n\nThe immediate consequence was a dramatic reduction in the cost of books. Where a hand-copied Bible might have cost the equivalent of a year's wages for a laborer, a printed Bible became, within a few decades, affordable for prosperous merchants. The effects rippled far beyond economics. Literacy rates began to rise, slowly at first, but with cumulative force across generations. New genres flourished: pamphlets on current events, vernacular novels, scientific treatises, and political tracts could now reach audiences of unprecedented size.\n\nThe Protestant Reformation of the sixteenth century is perhaps the most often-cited consequence. Martin Luther's Ninety-Five Theses, originally an academic protest, were printed and distributed across Germany within weeks, and across Europe within months. Without the press, Luther's challenge to the Catholic Church might well have remained a local matter; with it, the movement became a continental upheaval. Historians often describe the Reformation as the first mass-media revolution.\n\nThe press also transformed science. Researchers in different countries could now read the same texts, with the same diagrams and the same numerical tables. Errors could be identified and corrected through subsequent editions. The slow communal accumulation of knowledge that we now call modern science depended in important ways on this new infrastructure of reliable reproduction.\n\nIt would be misleading, however, to portray the printing press as a uniformly liberating force. Authorities of every kind soon recognized its power and sought to control it. Censorship offices, indices of forbidden books, and licensing requirements proliferated in both Protestant and Catholic regions. The press could spread heresy, dissent, and revolutionary ideas — but it could also, just as effectively, spread propaganda, conspiracy theories, and persecutory pamphlets. Witch-hunting manuals, perhaps most disturbingly, owed much of their influence to the same technology that disseminated the works of Erasmus and Copernicus.\n\nThe lesson is one that has been periodically rediscovered with each new information technology: the medium itself is neither liberating nor repressive. What it does is amplify whatever messages flow through it, for good or for ill. The printing press did not produce the Reformation, modern science, or the witch trials, but it made all of them — and many other things — possible at a scale that would have been unthinkable a generation earlier.`,
+        questions: [
+          { q: 'According to the passage, approximately how many printed books circulated in Europe within fifty years of Gutenberg\'s press?', options: ['Twenty thousand', 'Two million', 'Twenty million', 'Two hundred million'], correct: 2 },
+          { q: 'What was a notable economic effect of the printing press?', options: ['Books became more expensive than ever', 'A dramatic reduction in the cost of books', 'It eliminated the merchant class', 'Books were entirely free'], correct: 1 },
+          { q: 'Why was the Protestant Reformation possible at the scale it occurred?', options: ['Because Luther had unique theological insight', 'Because the printing press allowed rapid mass distribution of his ideas', 'Because the Catholic Church endorsed it', 'Because of new transportation networks'], correct: 1 },
+          { q: 'According to the passage, how did printing transform science?', options: ['By making scientists wealthier', 'By enabling reliable reproduction and the communal accumulation of knowledge', 'By replacing experiments with reading', 'By centralizing all research in Germany'], correct: 1 },
+          { q: 'How did authorities respond to the rise of printing?', options: ['They embraced it without restriction', 'They tried to control it through censorship and licensing', 'They banned it everywhere', 'They were unaware of its impact'], correct: 1 },
+          { q: 'Why does the author mention witch-hunting manuals?', options: ['To prove printing was mostly harmful', 'To illustrate that the same technology could serve both enlightening and persecutory purposes', 'To suggest Erasmus supported witch-hunts', 'To emphasize how few were printed'], correct: 1 },
+          { q: 'The word "uniformly" in the fifth paragraph most nearly means:', options: ['Strictly', 'Consistently in all cases', 'Beautifully', 'Briefly'], correct: 1 },
+          { q: 'Which sentence best captures the author\'s overall thesis?', options: ['New technologies are inherently liberating', 'New technologies are inherently dangerous', 'New technologies amplify both beneficial and harmful messages', 'New technologies have no real effect on society'], correct: 2 },
+          { q: 'According to the passage, what general lesson about new information technologies should we draw?', options: ['That they must be banned', 'That the medium itself is neither liberating nor repressive — it amplifies what passes through it', 'That only governments can manage them', 'That they always replace older technologies entirely'], correct: 1 }
+        ]
+      },
+      {
+        passage: `Aesthetic Judgment: Universal or Cultural?\n\nFew questions in philosophy have generated as much disagreement as whether judgments of beauty are universal or culturally relative. When a Japanese ink painting strikes a European viewer as beautiful, is the viewer responding to qualities that are objectively present in the work, or is the response a learned cultural reaction that another viewer, raised in a different tradition, might not share? The debate has occupied thinkers for centuries and remains unresolved.\n\nThe case for universality has a venerable history. The eighteenth-century philosopher David Hume argued that, although individual preferences vary, the consensus of skilled and informed critics tends to converge across time and place. Hume granted that prejudice and inexperience can distort judgment, but he believed that, in principle, a sufficiently educated taste could recognize quality in any artistic tradition. A later thinker, Immanuel Kant, proposed a more elaborate version of this idea: beauty, he argued, involves a kind of pleasure that one expects others to share, distinguishing it from purely personal preference.\n\nThe cultural-relativist position has equally distinguished defenders. The twentieth-century anthropologist Franz Boas and his students documented enormous variation in aesthetic preferences across societies: what one culture finds harmonious, another finds discordant; what one finds ornate, another finds garish. Some of this variation, the relativists argued, is too deep to be dismissed as superficial.\n\nMore recent research in psychology has complicated the picture in interesting ways. Studies have found that certain features — symmetry, certain ratios in faces, particular sound intervals in music — produce similar responses across very different cultures, suggesting some shared perceptual basis. At the same time, the application of those features to specific judgments is heavily shaped by culture. Two viewers may both prefer symmetry in the abstract, yet disagree sharply about whether a particular painting is symmetrically composed enough to be beautiful.\n\nA productive recent approach abandons the binary framing altogether. Rather than asking whether aesthetic judgment is universal or cultural, philosophers increasingly ask: what aspects are universal, and what aspects are cultural? The answer appears to involve a complex interaction. Certain basic perceptual capacities — the ability to detect symmetry, contrast, rhythmic regularity — appear to be deeply rooted in human biology. The interpretation and valuation of these features, however, vary enormously across traditions and historical periods. What was beautiful in fourteenth-century China would not necessarily strike a fourteenth-century European as beautiful, even though both could perceive the underlying patterns.\n\nThis more nuanced position does not resolve every dispute, but it has helped reframe the debate constructively. It also offers a useful caution. The temptation, when encountering an unfamiliar aesthetic, is either to assume one's own taste is the universal standard or to retreat into the relativist claim that no judgments can really be compared at all. Both responses, the new consensus suggests, are too easy. The truth is more interesting — and more demanding — than either.`,
+        questions: [
+          { q: 'What is the central question of the passage?', options: ['Whether art is profitable', 'Whether aesthetic judgments are universal or culturally relative', 'Whether Japanese painting is superior to European painting', 'Whether all art is symmetrical'], correct: 1 },
+          { q: 'According to the passage, what did David Hume believe?', options: ['Beauty is purely individual', 'Skilled critics tend to converge in judgment across time and place', 'Only Europeans can judge beauty', 'Beauty is purely a religious concept'], correct: 1 },
+          { q: 'What did Franz Boas and his students document?', options: ['The decline of European art', 'Enormous variation in aesthetic preferences across societies', 'A universal preference for symmetry', 'The history of music theory'], correct: 1 },
+          { q: 'What have psychological studies found about cross-cultural responses?', options: ['Nothing is shared across cultures', 'Some perceptual features produce similar responses, while their application is culture-shaped', 'All people prefer the same paintings', 'Symmetry is universally disliked'], correct: 1 },
+          { q: 'According to the passage, what is the "productive recent approach"?', options: ['Insisting beauty is universal', 'Insisting beauty is fully cultural', 'Asking what is universal and what is cultural, accepting both', 'Refusing to engage with the debate'], correct: 2 },
+          { q: 'According to the passage, what appears to be rooted in biology?', options: ['Specific preferences for certain artworks', 'Basic perceptual capacities like detecting symmetry, contrast, and rhythm', 'Cultural traditions of art-making', 'The Kantian theory of beauty'], correct: 1 },
+          { q: 'The author warns against two "too easy" responses. What are they?', options: ['Liking art and disliking art', 'Assuming one\'s own taste is universal, and claiming no judgments can be compared', 'Buying art and selling art', 'Praising and criticizing artists'], correct: 1 },
+          { q: 'The word "discordant" in the third paragraph most nearly means:', options: ['Harmonious and pleasing', 'Lacking harmony or pleasing arrangement', 'Modern', 'Profitable'], correct: 1 },
+          { q: 'Which best describes the author\'s tone?', options: ['Strongly partisan toward universalism', 'Strongly partisan toward relativism', 'Balanced, with cautious endorsement of an integrative view', 'Hostile toward all philosophical discussion'], correct: 2 }
+        ]
+      }
+    ],
+    listening: [
+      {
+        transcript: `Professor: Let's turn today to a topic that sits at the intersection of history and ethics — the responsibility of museums for objects acquired during the colonial era. As you may know, this has become one of the most contested issues in the museum world. Many of the world's most famous museums — the British Museum, the Louvre, the Berlin Museums — hold objects that were taken, often forcibly, from former colonies during the nineteenth and early twentieth centuries.\n\nNow, the case for returning such objects is, at first glance, straightforward. The acquisitions were typically obtained through coercion, theft, or grossly unequal exchanges. Returning them seems a basic matter of justice — and the originating communities, in many cases, have been requesting return for decades.\n\nStudent: So why is it controversial?\n\nProfessor: Because the counterarguments, whatever you think of them, are not trivial. Let me sketch the major ones.\n\nFirst, there is the argument about access and preservation. Major museums claim that they preserve objects in climate-controlled environments and make them accessible to millions of viewers from around the world. Critics of repatriation worry that returned objects might be poorly preserved or accessible to fewer people. This argument has been increasingly criticized, however, as condescending — many former colonies now have excellent museum infrastructure of their own.\n\nSecond, there is an argument from historical interpretation. When you see Egyptian artifacts next to Greek artifacts next to Mesopotamian artifacts in a single building, you can perceive connections and contrasts that you might miss if each were displayed only in its country of origin. Some defenders of large encyclopedic museums argue that disassembling them would impoverish our ability to understand global history as a whole.\n\nThird — and this is the argument I find most uncomfortable — there is a legal-property argument. Many objects were acquired under laws that, however unjust, were the laws in force at the time. If we open the door to retroactive moral judgment, where does the principle stop? Should the British Museum return Roman objects to Italy? Greek objects taken legally during the Ottoman era?\n\nStudent: That last one feels like a slippery-slope argument.\n\nProfessor: It is, and slippery-slope arguments are often overstated. But notice that even genuine wrongs raise practical questions about how, exactly, to repair them.\n\nThe current situation is gradually shifting. Several European institutions have begun returning specific objects — notably the Benin Bronzes, taken from what is now Nigeria during a British military expedition in 1897. France has announced its intention to return numerous objects to African countries. The pace is uneven, but the direction is clear.\n\nThe deeper philosophical question, I'd suggest, is whether we view such museums as repositories of human heritage held in trust for everyone, or as custodians of objects that, however long they have been held, ultimately belong somewhere else. I won't tell you what to think, but the answer you give shapes everything that follows.`,
+        questions: [
+          { q: 'What is the main topic of the lecture?', options: ['How to build a museum', 'The responsibility of museums for colonial-era acquisitions', 'The history of the British Empire', 'How to preserve ancient objects'], correct: 1 },
+          { q: 'What does the professor say is the case for returning colonial-era objects?', options: ['That museums are too crowded', 'That the acquisitions were often coerced or unjust, and return is a matter of justice', 'That the objects are no longer interesting to Western audiences', 'That preservation is impossible in Europe'], correct: 1 },
+          { q: 'The professor mentions that the "access and preservation" argument is increasingly criticized. Why?', options: ['Because it ignores legal property rights', 'Because it can be condescending to former colonies that now have strong museum infrastructure', 'Because nobody cares about preservation anymore', 'Because museums charge too much for entry'], correct: 1 },
+          { q: 'What is the "historical interpretation" argument in favor of large encyclopedic museums?', options: ['That they make money', 'That displaying objects from different cultures together reveals global connections that single-country displays miss', 'That they keep tourists in Europe', 'That they reduce shipping costs'], correct: 1 },
+          { q: 'Which argument does the professor describe as one he finds "most uncomfortable"?', options: ['The access argument', 'The historical interpretation argument', 'The legal-property argument and its slippery-slope implications', 'The argument about climate control'], correct: 2 },
+          { q: 'What does the student suggest about the legal-property argument?', options: ['That it is the strongest argument', 'That it sounds like a slippery-slope argument', 'That the professor should adopt it', 'That it has been disproved'], correct: 1 },
+          { q: 'According to the professor, what is happening in practice today?', options: ['Museums are refusing to return anything', 'Several European institutions have begun returning specific objects, like the Benin Bronzes', 'All objects have been returned', 'New colonial seizures are taking place'], correct: 1 },
+          { q: 'How does the professor end the lecture?', options: ['By telling students what to think', 'By posing a deeper philosophical question without resolving it', 'By dismissing the issue as unimportant', 'By announcing a museum closure'], correct: 1 }
+        ]
+      }
+    ],
+    speaking: [
+      { task: 'Independent Task', prompt: 'It has been argued that great works of art — paintings, novels, films — should never be censored, no matter how offensive their content. Others argue some content is harmful enough to justify restriction. What is your view, and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Sophisticated thesis', 'Substantive reasoning that engages tension between values', 'Specific illustrations', 'Range of vocabulary and grammatical structures'] },
+      { task: 'Independent Task', prompt: 'Some say that learning history is essential because it teaches us to avoid past mistakes; others argue that historical lessons rarely apply cleanly to new situations. What is your position, and why? You have 15 seconds to prepare and 45 seconds to respond.', criteria: ['Articulates a clear, nuanced position', 'Addresses both sides of the tension', 'Substantive examples', 'Fluent and natural delivery'] }
+    ],
+    writing: [
+      { task: 'Integrated Writing', prompt: 'Imagine you just read a passage and listened to a lecture about whether national governments should impose strict limits on private wealth. The passage argues IN FAVOR (extreme wealth concentrations distort democracy, reduce social mobility, and create inefficient markets), while the lecture argues AGAINST (wealth caps reduce incentives to innovate, are difficult to enforce, encourage capital flight, and define "extreme" arbitrarily). Write a 150-225 word response analyzing how the lecture challenges the reading.', minWords: 150, criteria: ['Precise summary of each lecture argument', 'Sophisticated linkage to specific reading claims', 'Logical paragraph structure', 'Accurate complex grammar', 'Academic register'] },
+      { task: 'Independent Writing', prompt: 'Do you agree or disagree with the following statement? "In the digital age, the ability to think deeply is more valuable than the ability to access information quickly." Use specific reasons and examples to support your answer. Write at least 300 words.', minWords: 300, criteria: ['Nuanced thesis that engages the trade-off directly', 'Multiple well-developed arguments', 'Engagement with counterarguments', 'Wide range of vocabulary and idiomatic expression', 'Varied complex sentences'] }
+    ]
+  }
+};
+
+// ============================================================================
+// STATE
+// ============================================================================
+const state = {
+  view: 'home',
+  currentExam: null,
+  currentSection: 'reading',
+  answers: {
+    reading: {},
+    listening: {},
+    speaking: {}, // { s0: { audioBlob, audioUrl, transcript, duration, pauses, metrics, selfEval } }
+    writing: {}
+  },
+  finishedSections: new Set(),
+  installPromptEvent: null
+};
+
+// ============================================================================
+// RECORDING ENGINE
+// ============================================================================
+class SpeakingRecorder {
+  constructor(taskKey) {
+    this.taskKey = taskKey;
+    this.mediaRecorder = null;
+    this.audioChunks = [];
+    this.stream = null;
+    this.recognition = null;
+    this.transcript = '';
+    this.interimTranscript = '';
+    this.startTime = 0;
+    this.pauseTimestamps = []; // timestamps where SpeechRecognition saw a result (proxy for activity)
+    this.lastActivity = 0;
+    this.timerInterval = null;
+    this.isRecording = false;
+    this.onUpdate = null;
+  }
+
+  async start() {
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      alert('Could not access microphone. Please grant microphone permission and try again.\n\nError: ' + e.message);
+      return false;
+    }
+    this.audioChunks = [];
+    this.transcript = '';
+    this.interimTranscript = '';
+    this.pauseTimestamps = [];
+
+    // MediaRecorder for the actual audio file
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' :
+                     MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '';
+    this.mediaRecorder = new MediaRecorder(this.stream, mimeType ? { mimeType } : {});
+    this.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) this.audioChunks.push(e.data); };
+    this.mediaRecorder.start();
+
+    // Speech Recognition for live transcription
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      this.recognition = new SR();
+      this.recognition.lang = 'en-US';
+      this.recognition.continuous = true;
+      this.recognition.interimResults = true;
+      this.recognition.onresult = (event) => {
+        let final = '', interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const r = event.results[i];
+          if (r.isFinal) final += r[0].transcript + ' ';
+          else interim += r[0].transcript;
+        }
+        if (final) this.transcript += final;
+        this.interimTranscript = interim;
+        this.lastActivity = Date.now();
+        this.pauseTimestamps.push(Date.now());
+        if (this.onUpdate) this.onUpdate();
+      };
+      this.recognition.onerror = (e) => {
+        console.warn('Speech recognition error:', e.error);
+        // not fatal; user still has audio
+      };
+      this.recognition.onend = () => {
+        // Auto-restart if still recording (browsers sometimes stop after silence)
+        if (this.isRecording) {
+          try { this.recognition.start(); } catch (e) {}
+        }
+      };
+      try { this.recognition.start(); } catch (e) { console.warn(e); }
+    }
+
+    this.startTime = Date.now();
+    this.lastActivity = Date.now();
+    this.isRecording = true;
+    this.timerInterval = setInterval(() => {
+      if (this.onUpdate) this.onUpdate();
+    }, 250);
+    return true;
+  }
+
+  stop() {
+    return new Promise((resolve) => {
+      if (!this.isRecording) return resolve(null);
+      this.isRecording = false;
+      clearInterval(this.timerInterval);
+
+      if (this.recognition) {
+        try { this.recognition.stop(); } catch (e) {}
+      }
+
+      const duration = (Date.now() - this.startTime) / 1000;
+
+      this.mediaRecorder.onstop = () => {
+        const blob = new Blob(this.audioChunks, { type: this.mediaRecorder.mimeType || 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+
+        // Compute pause analysis from activity timestamps
+        const pauseStats = this.computePauses();
+        const finalTranscript = (this.transcript + ' ' + this.interimTranscript).trim();
+
+        resolve({
+          audioBlob: blob,
+          audioUrl: url,
+          transcript: finalTranscript,
+          duration: duration,
+          pauseStats: pauseStats
+        });
+      };
+      this.mediaRecorder.stop();
+    });
+  }
+
+  getElapsed() {
+    return (Date.now() - this.startTime) / 1000;
+  }
+
+  computePauses() {
+    // Look at gaps between consecutive activity timestamps
+    if (this.pauseTimestamps.length < 2) {
+      return { longPauses: 0, avgGap: 0 };
+    }
+    let longPauses = 0;
+    let totalGap = 0;
+    for (let i = 1; i < this.pauseTimestamps.length; i++) {
+      const gap = (this.pauseTimestamps[i] - this.pauseTimestamps[i-1]) / 1000;
+      if (gap > 1.5) longPauses++;
+      totalGap += gap;
+    }
+    return {
+      longPauses,
+      avgGap: totalGap / (this.pauseTimestamps.length - 1)
+    };
+  }
+}
+
+let activeRecorder = null;
+
+// ============================================================================
+// RENDERING
+// ============================================================================
+const app = document.getElementById('app');
+
+function render() {
+  if (state.view === 'home') return renderHome();
+  if (state.view === 'exam') return renderExam();
+  if (state.view === 'results') return renderResults();
+}
+
+function renderHome() {
+  const examCards = Object.values(EXAMS).map(e => `
+    <div class="exam-card" onclick="startExam('${e.id}')">
+      <div class="level-badge ${e.level === 'B2' ? 'level-b2' : 'level-c1'}">${e.level} · ${e.level === 'B2' ? 'Intermediate' : 'Upper-Intermediate'}</div>
+      <h3>${e.title}</h3>
+      <p class="muted">${e.description}</p>
+    </div>
+  `).join('');
+
+  const installBanner = state.installPromptEvent ? `
+    <div class="install-banner">
+      <div>
+        <strong>Install this app</strong>
+        <div class="muted">Add to your home screen for offline use.</div>
+      </div>
+      <button class="btn" onclick="promptInstall()">Install</button>
+    </div>
+  ` : '';
+
+  app.innerHTML = `
+    ${installBanner}
+    <div class="card">
+      <h1>TOEFL iBT Practice Tests</h1>
+      <p class="muted">Five full practice exams with audio recording, transcription, fluency analysis, and detailed feedback.</p>
+      <hr>
+      <h3>How it works</h3>
+      <ul class="tips">
+        <li><strong>Two B2 tests + three slightly more advanced C1 tests.</strong> Choose any order.</li>
+        <li><strong>Reading and Listening:</strong> auto-graded multiple choice.</li>
+        <li><strong>Speaking:</strong> record your real voice. The app measures duration, words-per-minute, pauses, vocabulary range, grammar complexity, and topic development. You can also self-rate pronunciation by listening to your recording.</li>
+        <li><strong>Writing:</strong> evaluated on length, complexity, cohesion, and vocabulary.</li>
+        <li><strong>Final score:</strong> TOEFL iBT estimate (0-120), CEFR level, and personalized feedback.</li>
+        <li><strong>Works offline</strong> after first load. Install to your home screen for app-like experience.</li>
+      </ul>
+      <h3>Choose an exam</h3>
+      <div class="exam-grid">${examCards}</div>
+    </div>
+  `;
+}
+
+function renderExam() {
+  const exam = state.currentExam;
+  const sec = state.currentSection;
+
+  const sections = ['reading', 'listening', 'speaking', 'writing'];
+  const labels = { reading: 'Reading', listening: 'Listening', speaking: 'Speaking', writing: 'Writing' };
+  const tabs = sections.map(s => `
+    <div class="section-tab ${s === sec ? 'active' : ''} ${state.finishedSections.has(s) ? 'done' : ''}"
+         onclick="switchSection('${s}')">${labels[s]} ${state.finishedSections.has(s) ? '✓' : ''}</div>
+  `).join('');
+
+  let content = '';
+  if (sec === 'reading') content = renderReading(exam);
+  else if (sec === 'listening') content = renderListening(exam);
+  else if (sec === 'speaking') content = renderSpeaking(exam);
+  else if (sec === 'writing') content = renderWriting(exam);
+
+  const allDone = sections.every(s => state.finishedSections.has(s));
+
+  app.innerHTML = `
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0;">${exam.title}</h2>
+        <button class="btn btn-secondary" onclick="goHome()">← Home</button>
+      </div>
+      <p class="muted">Level: ${exam.level} · ${exam.level === 'B2' ? 'Intermediate' : 'Upper-Intermediate'}</p>
+      <div class="section-nav">${tabs}</div>
+      ${content}
+      ${allDone ? '<div style="margin-top:24px; text-align:center;"><button class="btn" onclick="finishExam()">Submit exam and see results</button></div>' : ''}
+    </div>
+  `;
+}
+
+function renderReading(exam) {
+  let html = '<p class="muted">Read each passage and answer the questions below. Scroll within the passage box if needed.</p>';
+  exam.reading.forEach((set, sIdx) => {
+    html += `<hr><h3>Passage ${sIdx + 1}</h3>`;
+    html += `<div class="passage">${set.passage.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>`;
+    set.questions.forEach((q, qIdx) => {
+      const key = `r${sIdx}_${qIdx}`;
+      const opts = q.options.map((o, oIdx) => `
+        <label class="option ${state.answers.reading[key] === oIdx ? 'selected' : ''}">
+          <input type="radio" name="${key}" value="${oIdx}" ${state.answers.reading[key] === oIdx ? 'checked' : ''}
+                 onchange="setAnswer('reading','${key}',${oIdx})"><span>${o}</span>
+        </label>
+      `).join('');
+      html += `
+        <div class="question-block">
+          <div class="question-text">${qIdx + 1}. ${q.q}</div>
+          <div class="options">${opts}</div>
+        </div>
+      `;
+    });
+  });
+  html += '<div style="margin-top:16px;"><button class="btn" onclick="markDone(\'reading\')">Mark Reading complete</button></div>';
+  return html;
+}
+
+function renderListening(exam) {
+  let html = '<p class="muted">Play the audio for each set, then answer the questions. You can replay if needed.</p>';
+  exam.listening.forEach((set, sIdx) => {
+    html += `<hr><h3>Listening Set ${sIdx + 1}</h3>`;
+    html += `
+      <div class="audio-controls">
+        <button onclick="playAudio(${sIdx})">▶ Play audio</button>
+        <button onclick="stopAudio()">■ Stop</button>
+        <span class="muted" id="audio-status-${sIdx}">Click "Play audio" to begin</span>
+      </div>
+      <details style="margin-bottom:16px;">
+        <summary class="muted">Show transcript (use only after listening)</summary>
+        <div class="passage" style="margin-top:8px; max-height:280px;">${set.transcript.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+      </details>
+    `;
+    set.questions.forEach((q, qIdx) => {
+      const key = `l${sIdx}_${qIdx}`;
+      const opts = q.options.map((o, oIdx) => `
+        <label class="option ${state.answers.listening[key] === oIdx ? 'selected' : ''}">
+          <input type="radio" name="${key}" value="${oIdx}" ${state.answers.listening[key] === oIdx ? 'checked' : ''}
+                 onchange="setAnswer('listening','${key}',${oIdx})"><span>${o}</span>
+        </label>
+      `).join('');
+      html += `
+        <div class="question-block">
+          <div class="question-text">${qIdx + 1}. ${q.q}</div>
+          <div class="options">${opts}</div>
+        </div>
+      `;
+    });
+  });
+  html += '<div style="margin-top:16px;"><button class="btn" onclick="markDone(\'listening\')">Mark Listening complete</button></div>';
+  return html;
+}
+
+function renderSpeaking(exam) {
+  const hasSpeechRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  let html = `<p class="muted">For each task, you have 15 seconds to think and 45 seconds to speak. The app records your real voice, transcribes it live, and measures your fluency.</p>`;
+
+  if (!hasSpeechRec) {
+    html += `<div class="no-permissions"><strong>Note:</strong> Live transcription is not available in this browser. Audio recording will still work, but transcription-based metrics will be limited. For best results, use Safari (iOS) or Chrome (Android/desktop).</div>`;
+  }
+
+  exam.speaking.forEach((s, idx) => {
+    const key = `s${idx}`;
+    const data = state.answers.speaking[key];
+    const hasRecording = data && data.audioUrl;
+
+    html += `
+      <hr>
+      <div class="task-info">${s.task}</div>
+      <div class="speaking-prompt">
+        <strong>Task ${idx + 1}:</strong> ${s.prompt}
+      </div>
+      <button class="btn btn-secondary" onclick="speakPrompt(${idx})" style="margin-bottom:10px;">🔊 Hear prompt aloud</button>
+
+      <div class="recorder" id="recorder-${key}">
+        <div class="recorder-controls">
+          <button class="rec-btn start" id="start-${key}" onclick="startRecording('${key}')" ${hasRecording ? 'style="display:none"' : ''}>
+            <span style="width:10px;height:10px;border-radius:50%;background:white;display:inline-block;"></span> Start recording
+          </button>
+          <button class="rec-btn stop hidden" id="stop-${key}" onclick="stopRecording('${key}')">
+            ■ Stop recording
+          </button>
+          <span class="rec-time hidden" id="time-${key}">0:00</span>
+        </div>
+        ${hasRecording ? renderRecordingResult(key, data, s.criteria) : `<div class="transcript-box" id="transcript-${key}">Your transcript will appear here as you speak...</div>`}
+      </div>
+    `;
+  });
+  html += '<div style="margin-top:16px;"><button class="btn" onclick="markDone(\'speaking\')">Mark Speaking complete</button></div>';
+  return html;
+}
+
+function renderRecordingResult(key, data, criteria) {
+  const m = analyzeSpeaking(data);
+  const wpmClass = m.wpm >= 110 && m.wpm <= 170 ? 'good' : m.wpm < 80 || m.wpm > 200 ? 'bad' : 'warning';
+  const durClass = data.duration >= 35 && data.duration <= 55 ? 'good' : data.duration < 20 ? 'bad' : 'warning';
+  const pauseClass = m.pauses <= 3 ? 'good' : m.pauses <= 6 ? 'warning' : 'bad';
+  const fillerClass = m.fillers <= 2 ? 'good' : m.fillers <= 5 ? 'warning' : 'bad';
+
+  // Self-eval state
+  const selfEval = data.selfEval || { delivery: 0, language: 0, topic: 0 };
+
+  return `
+    <audio controls src="${data.audioUrl}"></audio>
+    <div class="transcript-box has-content"><strong>Transcript:</strong> ${data.transcript || '<em>(no transcript captured)</em>'}</div>
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Duration</div>
+        <div class="metric-value ${durClass}">${data.duration.toFixed(1)}s</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Words per minute</div>
+        <div class="metric-value ${wpmClass}">${m.wpm}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Long pauses (>1.5s)</div>
+        <div class="metric-value ${pauseClass}">${m.pauses}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Filler words</div>
+        <div class="metric-value ${fillerClass}">${m.fillers}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Vocabulary diversity</div>
+        <div class="metric-value ${m.lexicalScore}">${(m.lexicalDiversity*100).toFixed(0)}%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Word count</div>
+        <div class="metric-value">${m.wordCount}</div>
+      </div>
+    </div>
+
+    <div class="self-eval">
+      <h4>Listen to yourself, then rate (1-5):</h4>
+      <div class="self-eval-row">
+        <span>Pronunciation & clarity</span>
+        <div class="self-eval-stars">${[1,2,3,4,5].map(n => `<button class="star ${selfEval.delivery >= n ? 'active' : ''}" onclick="setSelfEval('${key}','delivery',${n})">${n}</button>`).join('')}</div>
+      </div>
+      <div class="self-eval-row">
+        <span>Grammar & vocabulary</span>
+        <div class="self-eval-stars">${[1,2,3,4,5].map(n => `<button class="star ${selfEval.language >= n ? 'active' : ''}" onclick="setSelfEval('${key}','language',${n})">${n}</button>`).join('')}</div>
+      </div>
+      <div class="self-eval-row">
+        <span>Topic development</span>
+        <div class="self-eval-stars">${[1,2,3,4,5].map(n => `<button class="star ${selfEval.topic >= n ? 'active' : ''}" onclick="setSelfEval('${key}','topic',${n})">${n}</button>`).join('')}</div>
+      </div>
+      <div class="muted" style="margin-top:8px;font-size:12px;">Criteria: ${criteria.join(' · ')}</div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <button class="rec-btn delete" onclick="deleteRecording('${key}')">Delete & re-record</button>
+    </div>
+  `;
+}
+
+function renderWriting(exam) {
+  let html = `<p class="muted">Two writing tasks: one integrated, one independent essay.</p>`;
+  exam.writing.forEach((w, idx) => {
+    const key = `w${idx}`;
+    const val = state.answers.writing[key] || '';
+    const wc = val.trim() ? val.trim().split(/\s+/).length : 0;
+    html += `
+      <hr>
+      <div class="task-info">${w.task} · Minimum ${w.minWords} words</div>
+      <div class="speaking-prompt" style="background:var(--accent-light);">
+        <strong>Task ${idx + 1}:</strong> ${w.prompt}
+      </div>
+      <textarea style="min-height:240px;"
+                oninput="setAnswer('writing','${key}',this.value); document.getElementById('wc-${key}').textContent=this.value.trim()?this.value.trim().split(/\\s+/).length:0;"
+                placeholder="Write your response here...">${val}</textarea>
+      <div class="word-count">Words: <span id="wc-${key}">${wc}</span> / ${w.minWords} minimum</div>
+      <div class="muted" style="margin-top:6px;font-size:12px;">Evaluated on: ${w.criteria.join(' · ')}</div>
+    `;
+  });
+  html += '<div style="margin-top:16px;"><button class="btn" onclick="markDone(\'writing\')">Mark Writing complete</button></div>';
+  return html;
+}
+
+// ============================================================================
+// AUDIO (TTS) for Listening
+// ============================================================================
+function playAudio(setIdx) {
+  if (!('speechSynthesis' in window)) {
+    alert('Speech synthesis not supported. Please use the transcript instead.');
+    return;
+  }
+  stopAudio();
+  const transcript = state.currentExam.listening[setIdx].transcript;
+  const parts = transcript.split('\n\n');
+  let i = 0;
+  const statusEl = document.getElementById(`audio-status-${setIdx}`);
+  if (statusEl) statusEl.textContent = 'Playing...';
+
+  function speakNext() {
+    if (i >= parts.length) {
+      if (statusEl) statusEl.textContent = 'Finished. Replay if needed.';
+      return;
+    }
+    const part = parts[i].replace(/^(Professor|Student|Student A|Student B|Advisor):\s*/, '');
+    const u = new SpeechSynthesisUtterance(part);
+    u.rate = 0.95;
+    u.pitch = parts[i].startsWith('Student') ? 1.1 : 0.95;
+    u.lang = 'en-US';
+    u.onend = () => { i++; speakNext(); };
+    window.speechSynthesis.speak(u);
+  }
+  speakNext();
+}
+
+function stopAudio() {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+function speakPrompt(idx) {
+  if (!('speechSynthesis' in window)) return;
+  stopAudio();
+  const prompt = state.currentExam.speaking[idx].prompt;
+  const u = new SpeechSynthesisUtterance(prompt);
+  u.rate = 0.95;
+  u.lang = 'en-US';
+  window.speechSynthesis.speak(u);
+}
+
+// ============================================================================
+// RECORDING CONTROL
+// ============================================================================
+async function startRecording(key) {
+  if (activeRecorder) {
+    alert('Stop the current recording first.');
+    return;
+  }
+  const rec = new SpeakingRecorder(key);
+  rec.onUpdate = () => {
+    const timeEl = document.getElementById(`time-${key}`);
+    const tEl = document.getElementById(`transcript-${key}`);
+    if (timeEl) {
+      const elapsed = rec.getElapsed();
+      const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
+      timeEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+      // auto-stop at 60 seconds
+      if (elapsed >= 60) stopRecording(key);
+    }
+    if (tEl) {
+      const current = (rec.transcript + ' ' + rec.interimTranscript).trim();
+      if (current) {
+        tEl.textContent = current;
+        tEl.classList.add('has-content');
+      }
+    }
+  };
+
+  const ok = await rec.start();
+  if (!ok) return;
+
+  activeRecorder = rec;
+  document.getElementById(`recorder-${key}`).classList.add('recording');
+  document.getElementById(`start-${key}`).classList.add('hidden');
+  document.getElementById(`stop-${key}`).classList.remove('hidden');
+  document.getElementById(`time-${key}`).classList.remove('hidden');
+}
+
+async function stopRecording(key) {
+  if (!activeRecorder || activeRecorder.taskKey !== key) return;
+  const result = await activeRecorder.stop();
+  activeRecorder = null;
+
+  state.answers.speaking[key] = result;
+  render();
+  window.scrollTo({ top: document.body.scrollHeight * 0.6, behavior: 'smooth' });
+}
+
+function deleteRecording(key) {
+  const data = state.answers.speaking[key];
+  if (data && data.audioUrl) URL.revokeObjectURL(data.audioUrl);
+  delete state.answers.speaking[key];
+  render();
+}
+
+function setSelfEval(key, dim, val) {
+  if (!state.answers.speaking[key]) return;
+  if (!state.answers.speaking[key].selfEval) {
+    state.answers.speaking[key].selfEval = { delivery: 0, language: 0, topic: 0 };
+  }
+  state.answers.speaking[key].selfEval[dim] = val;
+  render();
+}
+
+// ============================================================================
+// SPEAKING ANALYSIS
+// ============================================================================
+function analyzeSpeaking(data) {
+  const text = (data.transcript || '').trim();
+  const words = text.split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const wpm = data.duration > 0 ? Math.round((wordCount / data.duration) * 60) : 0;
+
+  const fillerRegex = /\b(um|uh|er|hmm|like|you know|sort of|kind of|i mean|basically)\b/gi;
+  const fillerMatches = text.match(fillerRegex) || [];
+  const fillers = fillerMatches.length;
+
+  const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, ''))).size;
+  const lexicalDiversity = wordCount ? uniqueWords / wordCount : 0;
+  const lexicalScore = lexicalDiversity > 0.6 ? 'good' : lexicalDiversity > 0.45 ? 'warning' : 'bad';
+
+  const pauses = data.pauseStats ? data.pauseStats.longPauses : 0;
+
+  return { wordCount, wpm, fillers, lexicalDiversity, lexicalScore, pauses };
+}
+
+// Score speaking task on a 0-4 TOEFL-style rubric (per task)
+function scoreSpeakingTask(data) {
+  if (!data || !data.duration) return { score: 0, breakdown: { delivery: 0, language: 0, topic: 0 }, feedback: ['No recording submitted.'] };
+
+  const m = analyzeSpeaking(data);
+  const breakdown = { delivery: 0, language: 0, topic: 0 };
+  const feedback = [];
+
+  // === DELIVERY (fluency, pace, pauses) ===
+  let deliveryRaw = 0;
+  // Pace
+  if (m.wpm >= 110 && m.wpm <= 170) { deliveryRaw += 1.5; feedback.push('Good speaking pace (' + m.wpm + ' wpm).'); }
+  else if (m.wpm >= 90 && m.wpm <= 190) { deliveryRaw += 1; feedback.push('Pace acceptable but could be more natural (' + m.wpm + ' wpm; target 110-170).'); }
+  else if (m.wpm > 0) { feedback.push('Pace is off target (' + m.wpm + ' wpm; aim for 110-170 wpm). ' + (m.wpm < 90 ? 'Speak more confidently and avoid long pauses.' : 'Slow down for clarity.')); }
+  // Pauses
+  if (m.pauses <= 2) deliveryRaw += 1.5;
+  else if (m.pauses <= 5) { deliveryRaw += 1; feedback.push('Some long pauses (' + m.pauses + '). Try to keep ideas flowing.'); }
+  else feedback.push('Frequent long pauses (' + m.pauses + '). Practice with a stopwatch to build fluency.');
+  // Fillers
+  if (m.fillers <= 1) deliveryRaw += 1;
+  else if (m.fillers <= 3) { deliveryRaw += 0.5; feedback.push('Some filler words (' + m.fillers + '). Try to replace them with brief pauses.'); }
+  else feedback.push('Many filler words (' + m.fillers + '). Recording yourself daily helps reduce these.');
+  // Self-eval pronunciation
+  if (data.selfEval && data.selfEval.delivery) {
+    deliveryRaw = (deliveryRaw + data.selfEval.delivery * 0.8) / 2;  // blend
+  }
+  breakdown.delivery = Math.min(4, deliveryRaw);
+
+  // === LANGUAGE USE (grammar, vocabulary) ===
+  let langRaw = 0;
+  // Vocab diversity
+  if (m.lexicalDiversity > 0.6) langRaw += 1.5;
+  else if (m.lexicalDiversity > 0.45) { langRaw += 1; feedback.push('Vocabulary acceptable but somewhat repetitive.'); }
+  else if (m.wordCount > 20) feedback.push('Low vocabulary diversity — build a list of topic-specific synonyms.');
+  // Complex grammar markers
+  const lower = (data.transcript || '').toLowerCase();
+  const complexMarkers = ['which', 'whose', 'although', 'because', 'since', 'while', 'whereas', 'unless', 'despite', 'rather than'];
+  const complexFound = complexMarkers.filter(mk => lower.includes(mk)).length;
+  if (complexFound >= 3) langRaw += 1.5;
+  else if (complexFound >= 1) { langRaw += 1; feedback.push('Some complex sentences — try to add concessive structures ("although", "despite").'); }
+  else feedback.push('Mostly simple sentences. Add subordinate clauses for higher scoring.');
+  // Cohesion markers
+  const cohesionMarkers = ['however', 'therefore', 'moreover', 'for example', 'for instance', 'in addition', 'first', 'second', 'finally', 'in conclusion'];
+  const cohesionFound = cohesionMarkers.filter(mk => lower.includes(mk)).length;
+  if (cohesionFound >= 2) langRaw += 1;
+  else if (cohesionFound >= 1) langRaw += 0.5;
+  else feedback.push('Use connectors ("first", "for example", "in conclusion") to structure your answer.');
+  // Self-eval language
+  if (data.selfEval && data.selfEval.language) {
+    langRaw = (langRaw + data.selfEval.language * 0.8) / 2;
+  }
+  breakdown.language = Math.min(4, langRaw);
+
+  // === TOPIC DEVELOPMENT ===
+  let topicRaw = 0;
+  // Duration as proxy for development
+  if (data.duration >= 40) topicRaw += 1.5;
+  else if (data.duration >= 25) { topicRaw += 1; feedback.push('Response is somewhat short (' + data.duration.toFixed(1) + 's; target ~45s).'); }
+  else if (data.duration > 0) feedback.push('Response too short (' + data.duration.toFixed(1) + 's). Develop your ideas more fully.');
+  // Word count
+  if (m.wordCount >= 90) topicRaw += 1.5;
+  else if (m.wordCount >= 60) topicRaw += 1;
+  else feedback.push('Few words spoken (' + m.wordCount + '). Aim for 90-130 words for a full 45-second response.');
+  // Position indicator (signals stance taken)
+  const positionMarkers = ['i think', 'i believe', 'in my opinion', 'i prefer', 'i agree', 'i disagree', 'my view'];
+  if (positionMarkers.some(p => lower.includes(p))) topicRaw += 1;
+  else feedback.push('State your position clearly ("I believe...", "In my opinion...").');
+  // Self-eval topic
+  if (data.selfEval && data.selfEval.topic) {
+    topicRaw = (topicRaw + data.selfEval.topic * 0.8) / 2;
+  }
+  breakdown.topic = Math.min(4, topicRaw);
+
+  const score = (breakdown.delivery + breakdown.language + breakdown.topic) / 3;
+  return { score, breakdown, feedback };
+}
+
+// ============================================================================
+// ACTIONS
+// ============================================================================
+function startExam(id) {
+  state.currentExam = EXAMS[id];
+  state.view = 'exam';
+  state.currentSection = 'reading';
+  // Cleanup any previous audio URLs
+  Object.values(state.answers.speaking).forEach(d => { if (d && d.audioUrl) URL.revokeObjectURL(d.audioUrl); });
+  state.answers = { reading: {}, listening: {}, speaking: {}, writing: {} };
+  state.finishedSections = new Set();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function switchSection(s) {
+  stopAudio();
+  if (activeRecorder) {
+    alert('Stop the current recording first.');
+    return;
+  }
+  state.currentSection = s;
+  render();
+  window.scrollTo(0, 0);
+}
+
+function setAnswer(section, key, value) {
+  state.answers[section][key] = value;
+  if (section === 'reading' || section === 'listening') {
+    document.querySelectorAll(`input[name="${key}"]`).forEach(input => {
+      input.closest('.option').classList.toggle('selected', parseInt(input.value) === value);
+    });
+  }
+}
+
+function markDone(section) {
+  state.finishedSections.add(section);
+  render();
+}
+
+function goHome() {
+  stopAudio();
+  if (activeRecorder) {
+    if (!confirm('A recording is in progress. Discard and go home?')) return;
+    activeRecorder.stop();
+    activeRecorder = null;
+  }
+  state.view = 'home';
+  state.currentExam = null;
+  render();
+  window.scrollTo(0, 0);
+}
+
+function finishExam() {
+  stopAudio();
+  state.view = 'results';
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ============================================================================
+// SCORING — final results
+// ============================================================================
+function scoreReading(exam) {
+  let correct = 0, total = 0;
+  const review = [];
+  exam.reading.forEach((set, sIdx) => {
+    set.questions.forEach((q, qIdx) => {
+      total++;
+      const key = `r${sIdx}_${qIdx}`;
+      const ans = state.answers.reading[key];
+      const ok = ans === q.correct;
+      if (ok) correct++;
+      review.push({ q: q.q, your: ans !== undefined ? q.options[ans] : '(no answer)', correct: q.options[q.correct], ok });
+    });
+  });
+  return { correct, total, percent: Math.round(100 * correct / total), review };
+}
+
+function scoreListening(exam) {
+  let correct = 0, total = 0;
+  const review = [];
+  exam.listening.forEach((set, sIdx) => {
+    set.questions.forEach((q, qIdx) => {
+      total++;
+      const key = `l${sIdx}_${qIdx}`;
+      const ans = state.answers.listening[key];
+      const ok = ans === q.correct;
+      if (ok) correct++;
+      review.push({ q: q.q, your: ans !== undefined ? q.options[ans] : '(no answer)', correct: q.options[q.correct], ok });
+    });
+  });
+  return { correct, total, percent: Math.round(100 * correct / total), review };
+}
+
+function scoreWriting(exam) {
+  const items = [];
+  let totalScore = 0, maxScore = 0;
+  exam.writing.forEach((w, idx) => {
+    const key = `w${idx}`;
+    const text = (state.answers.writing[key] || '').trim();
+    const result = evaluateWritten(text, w.minWords, w.task === 'Integrated Writing');
+    items.push({ task: w.task, prompt: w.prompt, text, ...result, criteria: w.criteria });
+    totalScore += result.score;
+    maxScore += 5;
+  });
+  return { items, percent: Math.round(100 * totalScore / maxScore), scaled: Math.round(30 * totalScore / maxScore) };
+}
+
+function scoreSpeakingFinal(exam) {
+  const items = [];
+  let totalScore = 0;
+  exam.speaking.forEach((s, idx) => {
+    const key = `s${idx}`;
+    const data = state.answers.speaking[key];
+    const result = scoreSpeakingTask(data);
+    items.push({ task: s.task, prompt: s.prompt, criteria: s.criteria, data, ...result });
+    totalScore += result.score;
+  });
+  const avgScore = totalScore / exam.speaking.length;  // 0-4 scale
+  return { items, percent: Math.round(100 * avgScore / 4), scaled: Math.round(30 * avgScore / 4) };
+}
+
+function evaluateWritten(text, minWords, isIntegrated = false) {
+  if (!text) return { score: 0, wordCount: 0, feedback: ['No response provided.'] };
+  const words = text.split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const avgSentenceLen = sentences.length ? wordCount / sentences.length : 0;
+  const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, ''))).size;
+  const lexicalDiversity = wordCount ? uniqueWords / wordCount : 0;
+  const cohesionMarkers = ['however','therefore','moreover','in addition','furthermore','on the other hand','consequently','in contrast','for example','for instance','although','whereas','nevertheless','in conclusion','firstly','secondly','finally','because','since','while'];
+  const lower = text.toLowerCase();
+  const cohesionFound = cohesionMarkers.filter(m => lower.includes(m)).length;
+  const complexMarkers = ['which','whose','whom','whether','unless','despite','in spite of','rather than','not only'];
+  const complexFound = complexMarkers.filter(m => lower.includes(m)).length;
+
+  let score = 0;
+  const feedback = [], strengths = [], issues = [];
+
+  if (wordCount >= minWords) { score += 1; strengths.push('Length target met (' + wordCount + ' words).'); }
+  else if (wordCount >= minWords * 0.7) { score += 0.5; issues.push('Somewhat short (' + wordCount + '/' + minWords + ' words).'); }
+  else issues.push('Too short (' + wordCount + '/' + minWords + ' words).');
+
+  if (sentences.length >= 4 && avgSentenceLen >= 10) { score += 1; strengths.push('Multiple well-formed sentences.'); }
+  else if (sentences.length >= 2) { score += 0.5; issues.push('Limited sentence variety.'); }
+  else issues.push('Very limited sentence structure.');
+
+  if (lexicalDiversity > 0.55 && wordCount > 40) { score += 1; strengths.push('Good vocabulary range.'); }
+  else if (lexicalDiversity > 0.4) { score += 0.5; issues.push('Some repetition in word choice.'); }
+  else if (wordCount > 20) issues.push('Low vocabulary diversity.');
+
+  if (cohesionFound >= 3) { score += 1; strengths.push('Strong cohesive devices (' + cohesionFound + ').'); }
+  else if (cohesionFound >= 1) { score += 0.5; issues.push('Few transitional markers.'); }
+  else issues.push('No clear transitional words.');
+
+  if (complexFound >= 2) { score += 1; strengths.push('Complex grammatical structures present.'); }
+  else if (complexFound >= 1) { score += 0.5; issues.push('Limited grammatical complexity.'); }
+  else issues.push('Mostly simple sentences.');
+
+  if (isIntegrated && wordCount > 50) {
+    const ml = /lectur|professor|speaker/i.test(text);
+    const mr = /reading|passage|article|author/i.test(text);
+    if (ml && mr) strengths.push('References both lecture and reading.');
+    else issues.push('Integrated tasks require explicit reference to BOTH sources.');
+  }
+
+  if (strengths.length) feedback.push('Strengths: ' + strengths.join(' '));
+  if (issues.length) feedback.push('To improve: ' + issues.join(' '));
+  return { score, wordCount, feedback };
+}
+
+function getCEFR(scaled) {
+  if (scaled >= 110) return { level: 'C2', desc: 'Mastery / Proficient' };
+  if (scaled >= 95) return { level: 'C1', desc: 'Effective Operational Proficiency' };
+  if (scaled >= 72) return { level: 'B2', desc: 'Upper-Intermediate' };
+  if (scaled >= 42) return { level: 'B1', desc: 'Intermediate' };
+  return { level: 'A2', desc: 'Elementary' };
+}
+
+function renderResults() {
+  const exam = state.currentExam;
+  const r = scoreReading(exam);
+  const l = scoreListening(exam);
+  const s = scoreSpeakingFinal(exam);
+  const w = scoreWriting(exam);
+
+  const rScaled = Math.round(r.percent * 30 / 100);
+  const lScaled = Math.round(l.percent * 30 / 100);
+  const totalScaled = rScaled + lScaled + s.scaled + w.scaled;
+  const cefr = getCEFR(totalScaled);
+
+  const tips = [];
+  if (r.percent < 70) tips.push('<strong>Reading:</strong> Build academic vocabulary (AWL list). Practice skimming for main ideas, then close reading for inference questions.');
+  else if (r.percent < 85) tips.push('<strong>Reading:</strong> Strong foundation. Push on inference and rhetorical-purpose questions to reach the top range.');
+  else tips.push('<strong>Reading:</strong> Excellent. Keep reading varied academic sources.');
+
+  if (l.percent < 70) tips.push('<strong>Listening:</strong> Use academic podcasts daily (TED-Ed, BBC). Take notes: topic → 2-3 main points → examples.');
+  else if (l.percent < 85) tips.push('<strong>Listening:</strong> Good base. Work on speaker attitude and function questions.');
+  else tips.push('<strong>Listening:</strong> Excellent. Vary accents and disciplines.');
+
+  if (s.percent < 70) tips.push('<strong>Speaking:</strong> Record yourself daily — listen back. Practice the structure: position → 2 reasons → 1 specific example → quick conclusion. Aim for 110-150 wpm.');
+  else if (s.percent < 85) tips.push('<strong>Speaking:</strong> Good structure. Reduce fillers and add idiomatic phrases.');
+  else tips.push('<strong>Speaking:</strong> Strong. Polish pronunciation of difficult phonemes by mimicking native audio.');
+
+  if (w.percent < 70) tips.push('<strong>Writing:</strong> Build paragraph templates: topic sentence → reason → example → linking sentence. Practice integrated tasks with explicit reference to both sources.');
+  else if (w.percent < 85) tips.push('<strong>Writing:</strong> Good control. Increase syntactic complexity and address counterarguments.');
+  else tips.push('<strong>Writing:</strong> Excellent. Polish register and idiomatic precision.');
+
+  const speakingFeedback = s.items.map((it, idx) => `
+    <div class="feedback-block ${it.score >= 3 ? 'strength' : it.score >= 1.8 ? 'next' : 'weakness'}">
+      <strong>Speaking Task ${idx + 1} — score ${it.score.toFixed(1)}/4</strong>
+      <div class="muted" style="font-size:13px;">Delivery: ${it.breakdown.delivery.toFixed(1)}/4 · Language: ${it.breakdown.language.toFixed(1)}/4 · Topic: ${it.breakdown.topic.toFixed(1)}/4</div>
+      ${it.data && it.data.audioUrl ? `<audio controls src="${it.data.audioUrl}" style="margin-top:8px;"></audio>` : ''}
+      <ul class="tips" style="margin-top:8px;">${it.feedback.map(f => `<li>${f}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+
+  const writingFeedback = w.items.map((it, idx) => `
+    <div class="feedback-block ${it.score >= 4 ? 'strength' : it.score >= 2.5 ? 'next' : 'weakness'}">
+      <strong>Writing Task ${idx + 1} — score ${it.score.toFixed(1)}/5 · ${it.wordCount} words</strong>
+      <ul class="tips" style="margin-top:8px;">${it.feedback.map(f => `<li>${f}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+
+  const reviewSection = (data, label) => `
+    <details style="margin-top:12px;">
+      <summary class="muted"><strong>Question-by-question review — ${label}</strong></summary>
+      <div style="margin-top:8px;">
+        ${data.review.map((it, idx) => `
+          <div class="review-item">
+            <div class="review-q">${idx + 1}. ${it.q}</div>
+            <div>Your answer: <span class="${it.ok ? 'review-good' : 'review-your'}">${it.your}</span></div>
+            ${!it.ok ? `<div>Correct: <span class="review-correct">${it.correct}</span></div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </details>
+  `;
+
+  const weakest = weakestSection({reading:r.percent, listening:l.percent, speaking:s.percent, writing:w.percent});
+
+  app.innerHTML = `
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <h1 style="margin:0;">Your results</h1>
+        <button class="btn btn-secondary" onclick="goHome()">← Home</button>
+      </div>
+      <p class="muted">${exam.title} · Level ${exam.level}</p>
+
+      <div class="level-summary">
+        <div style="font-size:14px; color:var(--text-muted);">Estimated TOEFL iBT Score</div>
+        <div class="big-level">${totalScaled} <span style="font-size:18px; font-weight:400; color:var(--text-muted);">/ 120</span></div>
+        <div style="font-size:18px; font-weight:600; color:var(--purple);">CEFR Level: ${cefr.level} — ${cefr.desc}</div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="label">Reading</div>
+          <div class="score">${rScaled}<span style="font-size:14px; color:var(--text-muted);">/30</span></div>
+          <div class="label">${r.correct}/${r.total} (${r.percent}%)</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Listening</div>
+          <div class="score">${lScaled}<span style="font-size:14px; color:var(--text-muted);">/30</span></div>
+          <div class="label">${l.correct}/${l.total} (${l.percent}%)</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Speaking</div>
+          <div class="score">${s.scaled}<span style="font-size:14px; color:var(--text-muted);">/30</span></div>
+          <div class="label">${s.percent}%</div>
+        </div>
+        <div class="result-card">
+          <div class="label">Writing</div>
+          <div class="score">${w.scaled}<span style="font-size:14px; color:var(--text-muted);">/30</span></div>
+          <div class="label">${w.percent}%</div>
+        </div>
+      </div>
+
+      <hr>
+      <h2>Personalized feedback</h2>
+      <ul class="tips">${tips.map(t => `<li>${t}</li>`).join('')}</ul>
+
+      <h3 style="margin-top:24px;">Speaking — task by task</h3>
+      ${speakingFeedback}
+
+      <h3 style="margin-top:24px;">Writing — task by task</h3>
+      ${writingFeedback}
+
+      ${reviewSection(r, 'Reading')}
+      ${reviewSection(l, 'Listening')}
+
+      <hr>
+      <h3>What to study next</h3>
+      <ul class="tips">
+        <li><strong>Your weakest section was ${weakest}.</strong> Focus your next two weeks of practice there.</li>
+        <li><strong>Try another exam.</strong> If you scored above 80% on a B2 test, advance to a C1 test.</li>
+        <li><strong>Time yourself.</strong> Real TOEFL Reading allows 18 minutes per passage; build that stamina.</li>
+        <li><strong>Build active vocabulary.</strong> Note new academic words and use each in a sentence within 48 hours.</li>
+      </ul>
+
+      <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" onclick="goHome()">Try another exam</button>
+        <button class="btn btn-secondary" onclick="startExam('${exam.id}')">Retake this exam</button>
+      </div>
+    </div>
+  `;
+}
+
+function weakestSection(scores) {
+  let min = 'reading', minVal = 101;
+  for (const [k, v] of Object.entries(scores)) {
+    if (v < minVal) { min = k; minVal = v; }
+  }
+  return min.charAt(0).toUpperCase() + min.slice(1);
+}
+
+// ============================================================================
+// PWA INSTALL & SERVICE WORKER
+// ============================================================================
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  state.installPromptEvent = e;
+  if (state.view === 'home') render();
+});
+
+function promptInstall() {
+  if (!state.installPromptEvent) return;
+  state.installPromptEvent.prompt();
+  state.installPromptEvent.userChoice.then(() => {
+    state.installPromptEvent = null;
+    if (state.view === 'home') render();
+  });
+}
+
+// Register an inline service worker via Blob URL for offline caching
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'toefl-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(self.clients.claim());
+    });
+    self.addEventListener('fetch', e => {
+      if (e.request.method !== 'GET') return;
+      e.respondWith(
+        caches.open(CACHE).then(cache =>
+          cache.match(e.request).then(cached => {
+            const fetched = fetch(e.request).then(resp => {
+              if (resp && resp.status === 200 && resp.type === 'basic') {
+                cache.put(e.request, resp.clone());
+              }
+              return resp;
+            }).catch(() => cached);
+            return cached || fetched;
+          })
+        )
+      );
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(swBlob);
+  // Note: Service workers need same-origin scope. This works for hosted versions; for file:// it will fail silently and that is fine.
+  navigator.serviceWorker.register(swUrl).catch(() => {
+    // Service worker registration failed (e.g., file:// protocol). App still works without offline.
+  });
+}
+
+// ============================================================================
+// INIT
+// ============================================================================
+render();
+</script>
+</body>
+</html>
